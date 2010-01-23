@@ -1,0 +1,3 @@
+objects(NO) :- &rdf["file:sr.ttl"]("<http://example.org/ex#file>",P,O),
+		  &rdf[O](NS,NP,NO).
+

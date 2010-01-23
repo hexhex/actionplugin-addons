@@ -1,0 +1,26 @@
+% To use the larger, remote example rdfs provided by the D2R server for DBLP in:
+% http://www4.wiwiss.fu-berlin.de/dblp/
+% Switch the comments of the lines in 'author' and 'papers'.
+
+name("'Shamkant B. Navathe'").
+
+author(A,N):-name(N),
+	&rdf["file:PeopleShort.rdf"](A,"<http://xmlns.com/foaf/0.1/name>",N).
+%	&rdf["http://www4.wiwiss.fu-berlin.de/dblp/all/People"](A,"<http://xmlns.com/foaf/0.1/name>",N).
+
+papers(P,A):-
+	&rdf["file:RecordsShort.rdf"](P,"<http://purl.org/dc/elements/1.1/creator>",A).
+%	&rdf["http://www4.wiwiss.fu-berlin.de/dblp/all/Records"](P,"<http://purl.org/dc/elements/1.1/creator>",A).
+
+papers(P,A):- 
+	&rdf["file:RecordsShort.rdf"](P,"<http://www4.wiwiss.fu-berlin.de/dblp/terms.rdf#editor>",A).
+%	&rdf["http://www4.wiwiss.fu-berlin.de/dblp/all/Records"](P,"<http://www4.wiwiss.fu-berlin.de/dblp/terms.rdf#editor>",A).
+
+foaf(FOAF):-author(A,N),
+	papers(P,A),
+	papers(P,FO),
+	FO!=A,
+	papers(P2,FO),
+	papers(P2,FOAF),
+	FOAF!=FO, FOAF!=A.
+

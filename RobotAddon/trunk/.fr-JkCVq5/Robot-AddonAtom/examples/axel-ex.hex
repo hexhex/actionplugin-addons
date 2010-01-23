@@ -1,1 +1,0 @@
-objects(O) :- &rdf["file:test.ttl"](S,P,O).

@@ -1,3 +1,0 @@
-objects(S,P, O) :- &rdf["file:bnode1.ttl"](S,P,O).
-
-objects(S,P, O) :- &rdf["file:bnode2.ttl"](S,P,O).

@@ -1,0 +1,17 @@
+reachable(X,Y) :- edge(X,Y).
+reachable(X,Z) :- reachable(X,Y), edge(Y,Z).
+edge(X,Y) :- edge(Y,X).
+#retract["example1", exact, "vertex(", Z, ")"]{b,1} :- unreachable(Z).
+#assert["unreachables", "vertex(", Z,")."]{b,2} :- unreachable(Z).
+unreachable(X) :- not reachable(X,X), vertex(X).
+
+vertex(1).
+vertex(2).
+vertex(3).
+vertex(4).
+vertex(5).
+vertex(6).
+edge(1,2).
+edge(3,2).
+edge(3,4).
+

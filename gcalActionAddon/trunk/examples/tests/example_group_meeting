@@ -1,0 +1,97 @@
+%authentication information
+user("acthex").
+password("secretpassword").
+
+
+#namespace(rdf,"http://www.w3.org/1999/02/22-rdf-syntax-ns#")
+#namespace(ical,"http://www.w3.org/2002/12/cal/ical#")
+#namespace(homes,"http://con.fusion.at/asptut/sandbox/test_foaf.")
+#namespace(gcal,"http://www.google.com/calendar/feeds/")
+#namespace(cals,"http://www.kanzaki.com/courier/ical2rdf?u=http://www.google.com/calendar/ical/")
+
+meetingDate("'2010-02-02").
+%calendar ids of each team
+googleCalendar(team1,"gcal:02ngn7n8s87fi6oojbn06sre4g%40group.calendar.google.com/private/full").
+googleCalendar(team2,"gcal:3h4m35be5g8q35hrb17dfq4ubk%40group.calendar.google.com/private/full").
+
+%rdf sources of each teams calendar
+calendar(team1,"cals:02ngn7n8s87fi6oojbn06sre4g%40group.calendar.google.com/public/basic").
+calendar(team2,"cals:3h4m35be5g8q35hrb17dfq4ubk%40group.calendar.google.com/public/basic").
+
+%Getting rdf triples from calendars
+calendarTriples(P,X,Y,Z) :-  calendar(P,Q), &rdf[Q](X,Y,Z).
+event(M,X) :- calendarTriples(M,X,"rdf:type","ical:Vevent").
+aboutEvents(M,X,Y,Z) :- event(M,X), calendarTriples(M,X,Y,Z).
+
+
+% Legenda
+%
+% M = Person Name (team1, team2, team3 ... )
+% X = Event ID
+% S = Event Start Time in ICAL format
+% F = Event Finish Time in ICAL format
+% T = Event type (transparent, opaque). Opaque Events have better priority than transparent ones.
+eventDetails(M,X,S,F,T)   :- calendarTriples(M,X,"ical:dtstart",S1),
+                             calendarTriples(M,S1,"ical:dateTime",S),
+                             calendarTriples(M,X,"ical:dtend",F1),
+                             calendarTriples(M,F1,"ical:dateTime",F),
+                             calendarTriples(M,X,"ical:transp",T).
+
+%
+% Given two ternary predicates test range and busy in format (EventCode,StartTime,EndTime)
+% overlap(E1,E2) returns whether events overlap with each other
+%
+nonoverlap(X,Y,Z)  :- testRange(X,Sx,Fx), busy(Y,Sy,Fy,Z), Fx <= Sy.  
+nonoverlap(X,Y,Z)  :- busy(X,Sx,Fx,Z), testRange(Y,Sy,Fy), Fx <= Sy.
+nonoverlap(X,Y,Z)  :- nonoverlap(Y,X,Z).
+overlap(X,Y,Z)  :- testRange(X,_,_), busy(Y,_,_,Z), X <> Y, not nonoverlap(X,Y,Z).
+overlap(X,Y,Z)  :- busy(X,_,_,Z), testRange(Y,_,_), X <> Y, not nonoverlap(X,Y,Z).
+
+%
+% Select a meeting hour randomly
+%
+any(X) v -any(X) :- inrange(X).
+:- any(X), any(Y), X <> Y.
+:- not one.
+one :- inrange(X), any(X).
+
+%
+% Task 1: find an empty slot for accommodating a meeting for all the participants
+%        minimizing the number of conflicting appointments
+%
+
+%Subprogram for findin the slots in which a participant is busy
+%
+% Legenda: busy(PersonID,StartTime,EndTime,TypeOfMeeting)
+
+busy(M,S,F,T) :- meetingDate(D), eventDetails(M,X,S,F,T), &split[S,"T",0](D).
+busy(M,S,F,T) :- meetingDate(D), eventDetails(M,X,S,F,T), &split[F,"T",0](D).
+
+
+%
+% Quick and dirty modeling of the search space
+%
+% Allowed meetings have a slot of 1 hour, ranging from 8:00-9:00 to 19:00-20:00
+%
+inrange(S) :- meetingDate(D), &concat[D,"T08:00:00Z'"](S).
+inrange(S) :- meetingDate(D), &concat[D,"T09:00:00Z'"](S).
+inrange(S) :- meetingDate(D), &concat[D,"T10:00:00Z'"](S).
+inrange(S) :- meetingDate(D), &concat[D,"T11:00:00Z'"](S).
+inrange(S) :- meetingDate(D), &concat[D,"T12:00:00Z'"](S).
+inrange(S) :- meetingDate(D), &concat[D,"T13:00:00Z'"](S).
+inrange(S) :- meetingDate(D), &concat[D,"T14:00:00Z'"](S).
+inrange(S) :- meetingDate(D), &concat[D,"T15:00:00Z'"](S).
+inrange(S) :- meetingDate(D), &concat[D,"T16:00:00Z'"](S).
+inrange(S) :- meetingDate(D), &concat[D,"T17:00:00Z'"](S).
+inrange(S) :- meetingDate(D), &concat[D,"T18:00:00Z'"](S).
+inrange(S) :- meetingDate(D), &concat[D,"T19:00:00Z'"](S).
+
+succ(Last,F) :- meetingDate(D), &concat[D,"T19:00:00Z'"](Last), &concat[D,"T20:00:00Z'"](F).
+succ(S,F) :- inrange(S),inrange(F), S < F, not someinthemiddle(S,F).
+someinthemiddle(S,F) :- inrange(S), inrange(F), inrange(M), S < M, M < F.
+chosenSlot(all,S) :- any(S).
+testRange(all,S,F) :- chosenSlot(all,S), succ(S,F).
+
+:~ overlap(all,Y,"'OPAQUE'"). [1:1]
+
+#createEvent[Team, Url, "ActHex Meeting", Date, User, Password ]{b,1} :- password(Password), user(User), googleCalendar(Team, Url), chosenSlot(_,Date).

@@ -1,0 +1,42 @@
+-*- outline -*-
+
+This is the dlvhex-ROBOTaddon, a plugin for 'dlvhex'.
+
+This file contains information on compiling and installing and using the 
+ROBOTaddon.
+
+* Dependencies
+dlvhex-ROBOTaddon depends on the following:
+
+** dlvhex
+http://www.kr.tuwien.ac.at/staff/roman/dlvhex/
+
+* Building the dlvhex-ROBOTaddon
+
+** Prerequisites
+
+*** dlvhex
+See dlvhex installation instructions at:
+http://con.fusion.at/dlvhex/download.php
+
+** Building
+
+The typical procedure to build is:
+
+./configure
+make
+make install
+
+Some more information for each step follows:
+
+*** Configuration
+
+`./configure --enable-userinstall' will instal the plugin to the users home
+folder i.e.`~/.dlvhex/plugins'. By default the plugin will be installed
+in the DLVPATH/lib/dlvhex/plugins.
+
+General configuration options and explanation of related environment variables
+can be found using
+`./configure --help'
+
+

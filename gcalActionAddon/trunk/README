@@ -1,23 +1,28 @@
 -*- outline -*-
 
-This is the dlvhex-GoogleCalenarAddon, an addon for 'dlvhex-actionplugin'.
+This is the dlvhex-GoogleCalendar ActionAddon, an addon for 'dlvhex-actionplugin'.
 
 This file contains information on compiling and installing and using the 
 rdfplugin.
 
 * Dependencies
-dlvhex-GoogleCalendarAddon depends on the following:
+dlvhex-GoogleCalendar ActionAddon depends on the following:
 
 ** dlvhex
 http://www.kr.tuwien.ac.at/staff/roman/dlvhex/
 
-* Building the dlvhex-rdfplugin
+* Building the dlvhex-GoogleCalendar ActionAddon
 
 ** Prerequisites
 
 *** dlvhex
 See dlvhex installation instructions at:
 http://con.fusion.at/dlvhex/download.php
+
+*** Google Calendar Data API (Java)
+
+See
+http://code.google.com/apis/calendar/data/2.0/developers_guide_java.html
 
 ** Building
 
@@ -27,6 +32,14 @@ The typical procedure to build is:
 make
 make install
 
+Additionally, you will need to be have the following files in your $CLASSPATH:
+
+* gdata-core-1.0.jar: provided in gdata-src.java-1.40.3.zip\gdata\java\lib
+* gdata-calendar-2.0.jar: provided in gdata-src.java-1.40.3.zip\gdata\java\lib
+* google-collect-1.0-rc1.jar: provided in gdata-src.java-1.40.3.zip/gdata/java/deps
+* jsr305.jar: provided in gdata-src.java-1.40.3.zip/gdata/java/deps
+* calendarApp.class: provided in the src/ subdirectory of GCal Action Addo*gdata-core-1.0.jar
+ 
 Some more information for each step follows:
 
 *** Configuration
@@ -39,4 +52,6 @@ General configuration options and explanation of related environment variables
 can be found using
 `./configure --help'
 
-
+** Installation
+Run `make install' to install dlvhex-GoogleCalendar Addon into a system-wide
+plugin directory provided by dlvhex.

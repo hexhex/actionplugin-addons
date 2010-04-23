@@ -1,5 +1,3 @@
-AUTOMAKE_OPTIONS = gnu
-
 plugin_LTLIBRARIES = libactionkbmod.la
 
 AM_CPPFLAGS= -I$(top_srcdir)/include \

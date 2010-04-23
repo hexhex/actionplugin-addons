@@ -1,5 +1,3 @@
-AUTOMAKE_OPTIONS = gnu
-
 plugin_LTLIBRARIES = libactionrobot.la
 
 AM_CPPFLAGS= \

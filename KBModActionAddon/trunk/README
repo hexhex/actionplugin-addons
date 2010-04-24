@@ -9,7 +9,7 @@ rdfplugin.
 dlvhex-KBMod ActionAddon depends on the following:
 
 ** dlvhex
-http://www.kr.tuwien.ac.at/staff/roman/dlvhex/
+http://www.kr.tuwien.ac.at/research/systems/dlvhex/
 
 
 * Building the dlvhex-KBMod ActionAddon
@@ -18,7 +18,7 @@ http://www.kr.tuwien.ac.at/staff/roman/dlvhex/
 
 *** dlvhex
 See dlvhex installation instructions at:
-http://con.fusion.at/dlvhex/download.php
+http://www.kr.tuwien.ac.at/research/systems/dlvhex/download.html
 
 ** Building
 

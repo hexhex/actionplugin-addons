@@ -16,6 +16,9 @@ RobotActionPlugin::RobotActionAtom::RobotActionAtom() :
 		PluginActionAtom("RobotActionAtom") {
 	addInputConstant();
 	setOutputArity(1);
+
+	srand(time(0));
+	this->quantityOfFuel = rand() % 2;
 }
 
 void RobotActionPlugin::RobotActionAtom::retrieve(
@@ -32,12 +35,7 @@ void RobotActionPlugin::RobotActionAtom::retrieve(
 
 	const Term& s1 = registry.terms.getByID(id1);
 
-	bool quantityOfFuel;
-
-	if (id1.isConstantTerm() && s1.getUnquotedString() == "fuel") {
-		srand(time(0));
-		quantityOfFuel = rand() % 2;
-	} else
+	if (!id1.isConstantTerm() && s1.getUnquotedString() == "fuel")
 		throw PluginError("Wrong input argument type");
 
 	Tuple out;
@@ -46,7 +44,7 @@ void RobotActionPlugin::RobotActionAtom::retrieve(
 	// call Term::Term with second argument true to get a quoted string!
 	//
 	Term term(ID::MAINKIND_TERM | ID::SUBKIND_TERM_CONSTANT,
-			quantityOfFuel ? "low" : "high");
+			this->quantityOfFuel ? "low" : "high");
 	out.push_back(registry.storeTerm(term));
 	answer.get().push_back(out);
 

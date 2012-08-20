@@ -29,8 +29,10 @@ public:
 		RobotActionAtom();
 		virtual void retrieve(const Environment& environment,
 				const Query& query, Answer& answer);
-
+	private:
+		bool quantityOfFuel;
 	};
+
 
 	class RobotAction: public PluginAction<RobotActionPlugin> {
 

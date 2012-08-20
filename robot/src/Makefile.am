@@ -3,11 +3,6 @@
 #
 plugin_LTLIBRARIES = libdlvhexplugin-robot_action.la
 
-#
-# replace 'plugin' on the left side as above and
-# add all sources of your plugin
-#
-libdlvhexplugin_robot_action_la_SOURCES = RobotActionPlugin.cpp
 
 #
 # extend compiler flags by CFLAGS of other needed libraries
@@ -17,8 +12,9 @@ AM_CPPFLAGS = \
 	$(BOOST_CPPFLAGS) \
 	$(DLVHEX_CFLAGS)
 
-libdlvhexplugin_robot_action_la_LDFLAGS = -avoid-version -module -L$(top_builddir)/src/ -rpath /
-libdlvhexplugin_robot_action_la_LIBADD = -ldlvhex-action
+libdlvhexplugin_robot_action_la_SOURCES = RobotActionPlugin.cpp
+libdlvhexplugin_robot_action_la_LDFLAGS = -avoid-version -module # -L$(top_builddir)/src/ -rpath /
+libdlvhexplugin_robot_action_la_LIBADD = -ldlvhex-action $(DLVHEX_LIBS)
 
 libdlvhexplugin-robot_action-static.la: $(libdlvhexplugin_robot_action_la_OBJECTS)
 	$(CXXLINK) -avoid-version -module -rpath $(plugindir) $(libdlvhexplugin_robot_action_la_OBJECTS) $(libdlvhexplugin_robot_action_la_LIBADD)

@@ -19,6 +19,11 @@ class RobotActionPlugin: public ActionPluginInterface {
 
 public:
 
+  struct Environment
+  {
+    #warning needs to be defined
+  };
+
 	RobotActionPlugin() :
 			ActionPluginInterface() {
 //		setNameVersion(PACKAGE_TARNAME,ROBOTACTIONPLUGIN_VERSION_MAJOR,ROBOTACTIONPLUGIN_VERSION_MINOR,ROBOTACTIONPLUGIN_VERSION_MICRO);
@@ -68,8 +73,8 @@ public:
 
 		void rightCorridor();
 
-		virtual void execute(Environment& environment, const Registry& registry,
-				const Tuple& parms, InterpretationPtr & interpretationPtr);
+		virtual void execute(Environment& environment, RegistryPtr registry,
+				const Tuple& parms, InterpretationConstPtr interpretationPtr);
 
 	};
 

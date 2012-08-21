@@ -13,12 +13,9 @@
 DLVHEX_NAMESPACE_BEGIN
 
 RobotActionPlugin::RobotActionAtom::RobotActionAtom() :
-		PluginActionAtom("RobotActionAtom") {
+		PluginActionAtom("sense") {
 	addInputConstant();
 	setOutputArity(1);
-
-	srand(time(0));
-	this->quantityOfFuel = rand() % 2;
 }
 
 void RobotActionPlugin::RobotActionAtom::retrieve(
@@ -44,14 +41,14 @@ void RobotActionPlugin::RobotActionAtom::retrieve(
 	// call Term::Term with second argument true to get a quoted string!
 	//
 	Term term(ID::MAINKIND_TERM | ID::SUBKIND_TERM_CONSTANT,
-			this->quantityOfFuel ? "low" : "high");
+			environment.getQuantityOfFuel() ? "low" : "high");
 	out.push_back(registry.storeTerm(term));
 	answer.get().push_back(out);
 
 }
 
 RobotActionPlugin::RobotAction::RobotAction() :
-		PluginAction("RobotAction") {
+		PluginAction("robot") {
 	//addInputConstant();
 	currentAlarm = 0;
 	world.push_back(

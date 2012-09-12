@@ -1,0 +1,31 @@
+
+#maxint=21.
+
+% with rows(30). and columns(64). is a square
+rows(20).
+columns(20).
+row(R) :- #int(R), R < Rs, rows(Rs).
+column(C) :- #int(C), C < Cs, columns(Cs).
+
+% first row
+wall(0, C) :- #int(C), columns(Cs), C < Cs.
+
+% last row
+wall(Lr, C) :- rows(Rs), #int(Lr), Lr = Rs - 1, #int(C), columns(Cs), C < Cs.
+
+% first column
+wall(R, 0) :- #int(R), rows(Rs), R < Rs.
+
+% last column
+wall(R, Lc) :- #int(R), rows(Rs), R < Rs, columns(Cs), #int(Lc), Lc = Cs - 1.
+
+% position of robot
+starting_position(10, 10).
+
+#smartRobot[setDimension, R, C]{b, 1} :- rows(R), columns(C), &firstExecution[]().
+
+#smartRobot[addWall, R, C]{b, 2} :- wall(R, C), &firstExecution[]().
+
+#smartRobot[setPosition, R, C]{b, 3} :- &firstExecution[](), starting_position(R, C).
+
+#smartRobot[finishedFirstExecution, 0, 0]{b, 15} :- &firstExecution[]().

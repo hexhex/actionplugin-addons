@@ -1,0 +1,113 @@
+
+#smartRobot[move, up, 0]{b, 10}[Wup:] v
+		#smartRobot[move, left, 0]{b, 10}[Wleft:] v
+			#smartRobot[move, right, 0]{b, 10}[Wright:] :- canMoveUp, canMoveDown, canMoveLeft, canMoveRight, previousMovement(up), weights(Wup, Wdown, Wleft, Wright).
+	#smartRobot[move, down, 0]{b, 10}[Wdown:] v
+		#smartRobot[move, left, 0]{b, 10}[Wleft:] v
+			#smartRobot[move, right, 0]{b, 10}[Wright:] :- canMoveUp, canMoveDown, canMoveLeft, canMoveRight, previousMovement(down), weights(Wup, Wdown, Wleft, Wright).
+#smartRobot[move, up, 0]{b, 10}[Wup:] v
+	#smartRobot[move, down, 0]{b, 10}[Wdown:] v
+		#smartRobot[move, left, 0]{b, 10}[Wleft:] :- canMoveUp, canMoveDown, canMoveLeft, canMoveRight, previousMovement(left), weights(Wup, Wdown, Wleft, Wright).
+#smartRobot[move, up, 0]{b, 10}[Wup:] v
+	#smartRobot[move, down, 0]{b, 10}[Wdown:] v
+			#smartRobot[move, right, 0]{b, 10}[Wright:] :- canMoveUp, canMoveDown, canMoveLeft, canMoveRight, previousMovement(right), weights(Wup, Wdown, Wleft, Wright).
+#smartRobot[move, up, 0]{b, 10}[Wup:] v
+	#smartRobot[move, down, 0]{b, 10}[Wdown:] v
+		#smartRobot[move, left, 0]{b, 10}[Wleft:] v
+			#smartRobot[move, right, 0]{b, 10}[Wright:] :- canMoveUp, canMoveDown, canMoveLeft, canMoveRight, previousMovement(none), weights(Wup, Wdown, Wleft, Wright).
+
+
+#smartRobot[move, up, 0]{b, 10}[Wup:] v
+		#smartRobot[move, left, 0]{b, 10}[Wleft:] :- canMoveUp, canMoveDown, canMoveLeft, not canMoveRight, previousMovement(up), weights(Wup, Wdown, Wleft, Wright).
+	#smartRobot[move, down, 0]{b, 10}[Wdown:] v
+		#smartRobot[move, left, 0]{b, 10}[Wleft:] :- canMoveUp, canMoveDown, canMoveLeft, not canMoveRight, previousMovement(down), weights(Wup, Wdown, Wleft, Wright).
+#smartRobot[move, up, 0]{b, 10}[Wup:] v
+	#smartRobot[move, down, 0]{b, 10}[Wdown:] :- canMoveUp, canMoveDown, canMoveLeft, not canMoveRight, previousMovement(right), weights(Wup, Wdown, Wleft, Wright).
+#smartRobot[move, up, 0]{b, 10}[Wup:] v
+	#smartRobot[move, down, 0]{b, 10}[Wdown:] v
+		#smartRobot[move, left, 0]{b, 10}[Wleft:] :- canMoveUp, canMoveDown, canMoveLeft, not canMoveRight, previousMovement(Pm), Pm != up, Pm != down, Pm != right, weights(Wup, Wdown, Wleft, Wright).
+
+#smartRobot[move, up, 0]{b, 10}[Wup:] v
+			#smartRobot[move, right, 0]{b, 10}[Wright:] :- canMoveUp, canMoveDown, not canMoveLeft, canMoveRight, previousMovement(up), weights(Wup, Wdown, Wleft, Wright).
+	#smartRobot[move, down, 0]{b, 10}[Wdown:] v
+			#smartRobot[move, right, 0]{b, 10}[Wright:] :- canMoveUp, canMoveDown, not canMoveLeft, canMoveRight, previousMovement(down), weights(Wup, Wdown, Wleft, Wright).
+#smartRobot[move, up, 0]{b, 10}[Wup:] v
+	#smartRobot[move, down, 0]{b, 10}[Wdown:] :- canMoveUp, canMoveDown, not canMoveLeft, canMoveRight, previousMovement(left), weights(Wup, Wdown, Wleft, Wright).
+#smartRobot[move, up, 0]{b, 10}[Wup:] v
+	#smartRobot[move, down, 0]{b, 10}[Wdown:] v
+			#smartRobot[move, right, 0]{b, 10}[Wright:] :- canMoveUp, canMoveDown, not canMoveLeft, canMoveRight, previousMovement(Pm), Pm != up, Pm != down, Pm != left, weights(Wup, Wdown, Wleft, Wright).
+
+		#smartRobot[move, left, 0]{b, 10}[Wleft:] v
+			#smartRobot[move, right, 0]{b, 10}[Wright:] :- canMoveUp, not canMoveDown, canMoveLeft, canMoveRight, previousMovement(down), weights(Wup, Wdown, Wleft, Wright).
+#smartRobot[move, up, 0]{b, 10}[Wup:] v
+		#smartRobot[move, left, 0]{b, 10}[Wleft:] :- canMoveUp, not canMoveDown, canMoveLeft, canMoveRight, previousMovement(left), weights(Wup, Wdown, Wleft, Wright).
+#smartRobot[move, up, 0]{b, 10}[Wup:] v
+			#smartRobot[move, right, 0]{b, 10}[Wright:] :- canMoveUp, not canMoveDown, canMoveLeft, canMoveRight, previousMovement(right), weights(Wup, Wdown, Wleft, Wright).
+#smartRobot[move, up, 0]{b, 10}[Wup:] v
+		#smartRobot[move, left, 0]{b, 10}[Wleft:] v
+			#smartRobot[move, right, 0]{b, 10}[Wright:] :- canMoveUp, not canMoveDown, canMoveLeft, canMoveRight, previousMovement(Pm), Pm != down, Pm != left, Pm != right, weights(Wup, Wdown, Wleft, Wright).
+
+		#smartRobot[move, left, 0]{b, 10}[Wleft:] v
+			#smartRobot[move, right, 0]{b, 10}[Wright:] :- not canMoveUp, canMoveDown, canMoveLeft, canMoveRight, previousMovement(up), weights(Wup, Wdown, Wleft, Wright).
+	#smartRobot[move, down, 0]{b, 10}[Wdown:] v
+		#smartRobot[move, left, 0]{b, 10}[Wleft:] :- not canMoveUp, canMoveDown, canMoveLeft, canMoveRight, previousMovement(left), weights(Wup, Wdown, Wleft, Wright).
+	#smartRobot[move, down, 0]{b, 10}[Wdown:] v
+			#smartRobot[move, right, 0]{b, 10}[Wright:] :- not canMoveUp, canMoveDown, canMoveLeft, canMoveRight, previousMovement(right), weights(Wup, Wdown, Wleft, Wright).
+	#smartRobot[move, down, 0]{b, 10}[Wdown:] v
+		#smartRobot[move, left, 0]{b, 10}[Wleft:] v
+			#smartRobot[move, right, 0]{b, 10}[Wright:] :- not canMoveUp, canMoveDown, canMoveLeft, canMoveRight, previousMovement(Pm), Pm != up, Pm != left, Pm != right, weights(Wup, Wdown, Wleft, Wright).
+
+
+#smartRobot[move, up, 0]{b, 10} :- canMoveUp, canMoveDown, not canMoveLeft, not canMoveRight, previousMovement(up).
+	#smartRobot[move, down, 0]{b, 10} :- canMoveUp, canMoveDown, not canMoveLeft, not canMoveRight, previousMovement(down).
+#smartRobot[move, up, 0]{b, 10}[Wup:] v
+	#smartRobot[move, down, 0]{b, 10}[Wdown:] :- canMoveUp, canMoveDown, not canMoveLeft, not canMoveRight, previousMovement(Pm), Pm != up, Pm != down, weights(Wup, Wdown, Wleft, Wright).
+
+		#smartRobot[move, left, 0]{b, 10}[Wleft:] :- canMoveUp, not canMoveDown, canMoveLeft, not canMoveRight, previousMovement(down), weights(Wup, Wdown, Wleft, Wright).
+#smartRobot[move, up, 0]{b, 10}[Wup:] :- canMoveUp, not canMoveDown, canMoveLeft, not canMoveRight, previousMovement(right), weights(Wup, Wdown, Wleft, Wright).
+#smartRobot[move, up, 0]{b, 10}[Wup:] v
+		#smartRobot[move, left, 0]{b, 10}[Wleft:] :- canMoveUp, not canMoveDown, canMoveLeft, not canMoveRight, previousMovement(Pm), Pm != down, Pm != right, weights(Wup, Wdown, Wleft, Wright).
+
+			#smartRobot[move, right, 0]{b, 10}[Wright:] :- canMoveUp, not canMoveDown, not canMoveLeft, canMoveRight, previousMovement(down), weights(Wup, Wdown, Wleft, Wright).
+#smartRobot[move, up, 0]{b, 10}[Wup:] :- canMoveUp, not canMoveDown, not canMoveLeft, canMoveRight, previousMovement(left), weights(Wup, Wdown, Wleft, Wright).
+#smartRobot[move, up, 0]{b, 10}[Wup:] v
+			#smartRobot[move, right, 0]{b, 10}[Wright:] :- canMoveUp, not canMoveDown, not canMoveLeft, canMoveRight, previousMovement(Pm), Pm != down, Pm != left, weights(Wup, Wdown, Wleft, Wright).
+
+		#smartRobot[move, left, 0]{b, 10}[Wleft:] :- not canMoveUp, canMoveDown, canMoveLeft, not canMoveRight, previousMovement(up), weights(Wup, Wdown, Wleft, Wright).
+	#smartRobot[move, down, 0]{b, 10}[Wdown:] :- not canMoveUp, canMoveDown, canMoveLeft, not canMoveRight, previousMovement(right), weights(Wup, Wdown, Wleft, Wright).
+	#smartRobot[move, down, 0]{b, 10}[Wdown:] v
+		#smartRobot[move, left, 0]{b, 10}[Wleft:] :- not canMoveUp, canMoveDown, canMoveLeft, not canMoveRight, previousMovement(Pm), Pm != up, Pm != right, weights(Wup, Wdown, Wleft, Wright).
+
+			#smartRobot[move, right, 0]{b, 10}[Wright:] :- not canMoveUp, canMoveDown, not canMoveLeft, canMoveRight, previousMovement(up), weights(Wup, Wdown, Wleft, Wright).
+	#smartRobot[move, down, 0]{b, 10}[Wdown:] :- not canMoveUp, canMoveDown, not canMoveLeft, canMoveRight, previousMovement(left), weights(Wup, Wdown, Wleft, Wright).
+	#smartRobot[move, down, 0]{b, 10}[Wdown:] v
+			#smartRobot[move, right, 0]{b, 10}[Wright:] :- not canMoveUp, canMoveDown, not canMoveLeft, canMoveRight, previousMovement(Pm), Pm != up, Pm != left, weights(Wup, Wdown, Wleft, Wright).
+
+		#smartRobot[move, left, 0]{b, 10} :- not canMoveUp, not canMoveDown, canMoveLeft, canMoveRight, previousMovement(left).
+			#smartRobot[move, right, 0]{b, 10} :- not canMoveUp, not canMoveDown, canMoveLeft, canMoveRight, previousMovement(right).
+		#smartRobot[move, left, 0]{b, 10}[Wleft:] v
+			#smartRobot[move, right, 0]{b, 10}[Wright:] :- not canMoveUp, not canMoveDown, canMoveLeft, canMoveRight, previousMovement(Pm), Pm != left, Pm != right, weights(Wup, Wdown, Wleft, Wright).
+
+
+#smartRobot[move, up, 0]{b, 10} :- canMoveUp, not canMoveDown, not canMoveLeft, not canMoveRight.
+
+	#smartRobot[move, down, 0]{b, 10} :- not canMoveUp, canMoveDown, not canMoveLeft, not canMoveRight.
+
+		#smartRobot[move, left, 0]{b, 10} :- not canMoveUp, not canMoveDown, canMoveLeft, not canMoveRight.
+
+			#smartRobot[move, right, 0]{b, 10} :- not canMoveUp, not canMoveDown, not canMoveLeft, canMoveRight.
+
+
+
+current_position(R, C) :- &getPosition[](R, C), not &firstExecution[]().
+
+previousMovement(Pm) :- &previousMovement[](Pm).
+
+weights(Wup, Wdown, Wleft, Wright) :- &weights[](Wup, Wdown, Wleft, Wright).
+
+
+% I cannot check in the "middle position" (R_m_1 or R_p1 or C_m_3 or C_m_2 or C_p_1 or C_p_3 or C_p_2 or C_p_1) because I assume that the robot starts from a "valid" position
+canMoveUp :- current_position(R, C), R != 0, not wall(R_m_2, C), R = R_m_2 + 2, row(R_m_2), C = C_m_1 + 1, column(C_m_1), C_p_1 = C + 1, column(C_p_1), not wall(R_m_2, C_m_1), not wall(R_m_2, C_p_1), C = C_m_2 + 2, column(C_m_2), C_p_2 = C + 2, column(C_p_2), not wall(R_m_2, C_m_2), not wall(R_m_2, C_p_2), C = C_m_3 + 3, column(C_m_3), C_p_3 = C + 3, column(C_p_3), not wall(R_m_2, C_m_3), not wall(R_m_2, C_p_3).
+canMoveDown :- current_position(R, C), Rs = Rs_m_1 + 1, R != Rs_m_1, rows(Rs), row(Rs_m_1), not wall(R_p_2, C), R_p_2 = R + 2, row(R_p_2), C = C_m_1 + 1, column(C_m_1), C_p_1 = C + 1, column(C_p_1), not wall(R_p_2, C_m_1), not wall(R_p_2, C_p_1), C = C_m_2 + 2, column(C_m_2), C_p_2 = C + 2, column(C_p_2), not wall(R_p_2, C_m_2), not wall(R_p_2, C_p_2), C = C_m_3 + 3, column(C_m_3), C_p_3 = C + 3, column(C_p_3), not wall(R_p_2, C_m_3), not wall(R_p_2, C_p_3).
+canMoveLeft :- current_position(R, C), C != 0, not wall(R, C_m_4), C = C_m_4 + 4, column(C_m_4), R = R_m_1 + 1, row(R_m_1), R_p_1 = R + 1, row(R_p_1), not wall(R_m_1, C_m_4), not wall(R_p_1, C_m_4).
+canMoveRight :- current_position(R, C), Cs = Cs_m_1 + 1, C != Cs_m_1, columns(Cs), column(Cs_m_1), not wall(R, C_p_4), C_p_4 = C + 4, column(C_p_4), R = R_m_1 + 1, row(R_m_1), R_p_1 = R + 1, row(R_p_1), not wall(R_m_1, C_p_4), not wall(R_p_1, C_p_4).

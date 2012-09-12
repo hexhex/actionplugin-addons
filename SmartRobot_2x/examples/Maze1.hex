@@ -1,0 +1,82 @@
+
+#maxint=100.
+
+% with rows(30). and columns(64). is a square
+rows(37).
+columns(97).
+row(R) :- #int(R), R < Rs, rows(Rs).
+column(C) :- #int(C), C < Cs, columns(Cs).
+
+% first row
+%wall(0, 0).wall(0, 1).wall(0, 2).wall(0, 3).wall(0, 4).wall(0, 5).wall(0, 6).wall(0, 7).wall(0, 8).wall(0, 9).wall(0, 10).wall(0, 11).wall(0, 12).wall(0, 13).wall(0, 14).wall(0, 15).
+wall(0, C) :- #int(C), columns(Cs), C < Cs.
+
+% last row
+%wall(14, 0).wall(14, 1).wall(14, 2).wall(14, 3).wall(14, 4).wall(14, 5).wall(14, 6).wall(14, 7).wall(14, 8).wall(14, 9).wall(14, 10).wall(14, 11).wall(14, 12).wall(14, 13).wall(14, 14).wall(14, 15).
+wall(Lr, C) :- rows(Rs), #int(Lr), Lr = Rs - 1, #int(C), columns(Cs), C < Cs.
+
+% first column
+%wall(1, 0).wall(2, 0).wall(3, 0).wall(4, 0).wall(5, 0).wall(6, 0).wall(7, 0).wall(8, 0).wall(9, 0).wall(10, 0).wall(11, 0).wall(12, 0).wall(13, 0).wall(14, 0).
+wall(R, 0) :- #int(R), rows(Rs), R < Rs.
+
+% last column
+%wall(1, 15).wall(2, 15).wall(3, 15).wall(4, 15).wall(5, 15).wall(6, 15).wall(7, 15).wall(8, 15).wall(9, 15).wall(10, 15).wall(11, 15).wall(12, 15).wall(13, 15).
+wall(R, Lc) :- #int(R), rows(Rs), R < Rs, columns(Cs), #int(Lc), Lc = Cs - 1.
+
+% other walls
+%wall(5, 0). wall(5, 1). wall(5, 2). wall(5, 3). wall(5, 4). wall(5, 5). wall(5, 6). wall(5, 7). wall(5, 8). wall(5, 9). wall(5, 10). wall(5, 11). wall(5, 12). wall(5, 13). wall(5, 14). wall(5, 15).
+%wall(4, C) :- #int(C), C <= 15.
+%wall(6, 15). wall(7, 15). wall(8, 15). wall(9, 15). wall(10, 15). wall(11, 15). wall(12, 15). wall(13, 15). wall(14, 15). wall(15, 15). wall(16, 15).
+%wall(R, 15) :- #int(R), R > 4, R <= 15.
+%wall(15, C) :- #int(C), C > 15, C <= 25.
+%wall(R, 25) :- #int(R), R > 15, R <= 25.
+%wall(R, 23) :- #int(R), R <= 11.
+%wall(11, C) :- #int(C), C > 23, C <= 31.
+%wall(R, 31) :- #int(R), R > 3, R <= 11.
+%wall(4, C) :- #int(C), C > 31, C <= 41.
+%wall(R, 41) :- #int(R), R > 3, R <= 21.
+
+wall(R, 8) :- #int(R), R > 0, R <= 24.
+wall(24, C) :- #int(C), C > 8, C <= 24.
+wall(R, 16) :- #int(R), R > 0, R <= 20.
+wall(R, 24) :- #int(R), R > 3, R <= 24.
+wall(4, C) :- #int(C), C > 24, C <= 63.
+wall(28, C) :- #int(C), C > 7, C <= 32.
+wall(R, 8) :- #int(R), R > 27, R <= 31.
+wall(32, C) :- #int(C), C > 7, C <= 24.
+wall(R, 32) :- #int(R), R > 23, R <= 35.
+wall(R, 32) :- #int(R), R > 8, R <= 20.
+wall(24, C) :- #int(C), C > 31, C <= 40.
+wall(R, 40) :- #int(R), R > 11, R <= 23.
+wall(8, C) :- #int(C), C > 31, C <= 48.
+wall(16, C) :- #int(C), C > 40, C <= 48.
+wall(R, 48) :- #int(R), R > 8, R <= 15.
+wall(R, 40) :- #int(R), R > 28, R <= 32.
+wall(R, 48) :- #int(R), R > 19, R <= 28.
+wall(28, C) :- #int(C), C > 39, C <= 48.
+wall(R, 56) :- #int(R), R > 7, R <= 28.
+wall(R, 64) :- #int(R), R > 3, R <= 12.
+wall(12, C) :- #int(C), C > 64, C <= 80.
+wall(R, 72) :- #int(R), R > 3, R <= 8.
+wall(R, 80) :- #int(R), R > 0, R <= 8.
+wall(8, C) :- #int(C), C > 72, C <= 80.
+wall(R, 88) :- #int(R), R > 3, R <= 16.
+wall(16, C) :- #int(C), C > 56, C <= 88.
+wall(32, C) :- #int(C), C > 40, C <= 72.
+wall(R, 72) :- #int(R), R > 28, R <= 32.
+wall(28, C) :- #int(C), C > 56, C <= 72.
+wall(20, C) :- #int(C), C > 63, C <= 96.
+wall(24, C) :- #int(C), C > 63, C <= 80.
+wall(R, 80) :- #int(R), R > 24, R <= 35.
+wall(R, 88) :- #int(R), R > 20, R <= 32.
+
+% position of robot
+starting_position(14, 44).
+
+#smartRobot[setDimension, R, C]{b, 1} :- rows(R), columns(C), &firstExecution[]().
+
+#smartRobot[addWall, R, C]{b, 2} :- wall(R, C), &firstExecution[]().
+
+#smartRobot[setPosition, R, C]{b, 3} :- &firstExecution[](), starting_position(R, C).
+
+#smartRobot[finishedFirstExecution, 0, 0]{b, 50} :- &firstExecution[]().

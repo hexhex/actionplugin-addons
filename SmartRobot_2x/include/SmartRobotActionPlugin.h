@@ -1,0 +1,152 @@
+/**
+ * @file SmartRobotActionPlugin.h
+ * @author Stefano Germano
+ *
+ * @brief ...
+ */
+
+#ifndef SMART_ROBOT_ACTION_PLUGIN_H_
+#define SMART_ROBOT_ACTION_PLUGIN_H_
+
+#include "acthex/ActionPluginInterface.h"
+
+DLVHEX_NAMESPACE_BEGIN
+
+class SmartRobotActionPlugin: public ActionPluginInterface {
+
+public:
+
+	class Environment: public PluginEnvironment {
+	public:
+		Environment() {
+			name = "EnvironmentOfSmartRobotActionPlugin";
+			
+			currentRows = 10;
+			currentColumns = 10;
+			createMaze();
+			
+			firstExecution = true;
+			
+			currentPositionColumn = 0;
+			currentPositionRow = 0;
+
+			previousMovement = "none";
+			
+			numberOfUp = 0;
+			numberOfDown = 0;
+			numberOfLeft = 0;
+			numberOfRight = 0;
+			
+		}
+		virtual ~Environment() {
+		}
+		;
+		void addWall(unsigned int, unsigned int);
+		void setDimension(unsigned int, unsigned int);
+		void setCurrentPosition(unsigned int, unsigned int);
+		void createMaze();
+		void destroyMaze();
+		unsigned int getCurrentPositionRow() const;
+		unsigned int getCurrentPositionColumn() const;
+		unsigned int getCurrentRows() const;
+		unsigned int getCurrentColumns() const;
+		void setPosition(unsigned int, unsigned int);
+		bool isTheFirstExecution() const;
+		void refresh();
+		void moveUp();
+		void moveDown();
+		void moveLeft();
+		void moveRight();
+		void finishedFirstExecution();
+		std::string getPreviousMovement() const;
+		unsigned int getNumberOfUp() const;
+		unsigned int getNumberOfDown() const;
+		unsigned int getNumberOfLeft() const;
+		unsigned int getNumberOfRight() const;
+	private:
+		std::string name;
+		bool ** maze; //true if there is a wall, false otherwise
+		unsigned int currentPositionRow;
+		unsigned int currentPositionColumn;
+		unsigned int currentRows;
+		unsigned int currentColumns;
+		bool firstExecution;
+		std::string previousMovement;
+		unsigned int numberOfUp;
+		unsigned int numberOfDown;
+		unsigned int numberOfLeft;
+		unsigned int numberOfRight;
+		void normalizeNumberOf();
+	};
+
+	SmartRobotActionPlugin() :
+			ActionPluginInterface() {
+		setNameVersion(PACKAGE_TARNAME, SMARTROBOTACTIONPLUGIN_VERSION_MAJOR,
+				SMARTROBOTACTIONPLUGIN_VERSION_MINOR,
+				SMARTROBOTACTIONPLUGIN_VERSION_MICRO);
+	}
+
+	class SmartRobotActionAtomFirstExecution: public PluginActionAtom<SmartRobotActionPlugin> {
+	public:
+		SmartRobotActionAtomFirstExecution();
+	private:
+		virtual void retrieve(const Environment& environment,
+				const Query& query, Answer& answer);
+	};
+	
+	class SmartRobotActionAtomGetPosition: public PluginActionAtom<SmartRobotActionPlugin> {
+	public:
+		SmartRobotActionAtomGetPosition();
+	private:
+		virtual void retrieve(const Environment& environment,
+									 const Query& query, Answer& answer);
+	};
+	
+	class SmartRobotActionAtomPreviousMovement: public PluginActionAtom<SmartRobotActionPlugin> {
+	public:
+		SmartRobotActionAtomPreviousMovement();
+	private:
+		virtual void retrieve(const Environment& environment,
+									 const Query& query, Answer& answer);
+	};
+	
+	class SmartRobotActionAtomWeights: public PluginActionAtom<SmartRobotActionPlugin> {
+	public:
+		SmartRobotActionAtomWeights();
+	private:
+		virtual void retrieve(const Environment& environment,
+									 const Query& query, Answer& answer);
+	};
+
+	class SmartRobotAction: public PluginAction<SmartRobotActionPlugin> {
+
+	public:
+
+		SmartRobotAction();
+		
+	private:
+		virtual void execute(Environment& environment, RegistryPtr registry,
+				const Tuple& parms, InterpretationConstPtr interpretationPtr);
+
+	};
+
+	virtual std::vector<PluginAtomPtr> createAtoms(ProgramCtx& ctx) const;
+
+	virtual std::vector<PluginActionBasePtr> createActions(
+			ProgramCtx& ctx) const;
+
+protected:
+
+	ActionPluginInterfacePtr create(ProgramCtx& ctx) {
+		std::cerr << "create in SmartRobotActionPlugin" << std::endl;
+#warning a trick, maybe we should find a way remove it
+		ctx.getPluginEnvironment<SmartRobotActionPlugin>();
+		std::cerr << "getPluginEnvironment done" << std::endl;
+		return boost::shared_ptr < SmartRobotActionPlugin > (new SmartRobotActionPlugin());
+	}
+
+};
+
+DLVHEX_NAMESPACE_END
+
+#endif /* SMART_ROBOT_ACTION_PLUGIN_H_ */

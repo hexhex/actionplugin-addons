@@ -1,3 +1,6 @@
 [submodule "robot/dlvhex-common"]
 	path = robot/dlvhex-common
 	url = https://github.com/hexhex/build.git
+[submodule "SmartRobot_2x/dlvhex-common"]
+	path = SmartRobot_2x/dlvhex-common
+	url = git@github.com:hexhex/build.git

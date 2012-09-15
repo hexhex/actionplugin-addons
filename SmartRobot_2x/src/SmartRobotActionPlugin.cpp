@@ -340,7 +340,7 @@ SmartRobotActionPlugin::SmartRobotAction::SmartRobotAction() :
 
 void SmartRobotActionPlugin::SmartRobotAction::execute(Environment& environment,
 		RegistryPtr pregistry, const Tuple& parms,
-		InterpretationConstPtr interpretationPtr) {
+		const InterpretationConstPtr interpretationPtr) {
   Registry& registry = *pregistry;
 
 	int c = system("clear");

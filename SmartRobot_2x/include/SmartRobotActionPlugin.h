@@ -125,8 +125,8 @@ public:
 		SmartRobotAction();
 		
 	private:
-		virtual void execute(Environment& environment, RegistryPtr registry,
-				const Tuple& parms, InterpretationConstPtr interpretationPtr);
+		virtual void execute(Environment&, RegistryPtr,
+				const Tuple&, const InterpretationConstPtr);
 
 	};
 

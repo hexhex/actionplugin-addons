@@ -83,7 +83,7 @@ void SmartRobotActionPlugin::Environment::refresh() {
 	}
 
 	if(foundTreasure())
-		std::cout << "Congratulations! You have found the Treasury" << std::endl;
+		std::cout << "Congratulations! You have found the Treasure" << std::endl;
 
 }
 

@@ -20,23 +20,23 @@ public:
 	public:
 		Environment() {
 			name = "EnvironmentOfSmartRobotActionPlugin";
-			
+
 			currentRows = 10;
 			currentColumns = 10;
 			createMaze();
-			
+
 			firstExecution = true;
-			
+
 			currentPositionColumn = 0;
 			currentPositionRow = 0;
 
 			previousMovement = "none";
-			
+
 			numberOfUp = 0;
 			numberOfDown = 0;
 			numberOfLeft = 0;
 			numberOfRight = 0;
-			
+
 		}
 		virtual ~Environment() {
 		}
@@ -63,6 +63,9 @@ public:
 		unsigned int getNumberOfDown() const;
 		unsigned int getNumberOfLeft() const;
 		unsigned int getNumberOfRight() const;
+		unsigned int getNumberOfTimes(unsigned int, unsigned int) const;
+		bool foundTreasure() const;
+		void putTreasure(unsigned int, unsigned int);
 	private:
 		std::string name;
 		bool ** maze; //true if there is a wall, false otherwise
@@ -77,6 +80,9 @@ public:
 		unsigned int numberOfLeft;
 		unsigned int numberOfRight;
 		void normalizeNumberOf();
+		unsigned int ** numberOfTimes; //the number of times that the robot has been in each cell
+		unsigned int treasureRow;
+		unsigned int treasureColumn;
 	};
 
 	SmartRobotActionPlugin() :
@@ -86,36 +92,58 @@ public:
 				SMARTROBOTACTIONPLUGIN_VERSION_MICRO);
 	}
 
-	class SmartRobotActionAtomFirstExecution: public PluginActionAtom<SmartRobotActionPlugin> {
+	class SmartRobotActionAtomFirstExecution: public PluginActionAtom<
+			SmartRobotActionPlugin> {
 	public:
 		SmartRobotActionAtomFirstExecution();
 	private:
 		virtual void retrieve(const Environment& environment,
 				const Query& query, Answer& answer);
 	};
-	
-	class SmartRobotActionAtomGetPosition: public PluginActionAtom<SmartRobotActionPlugin> {
+
+	class SmartRobotActionAtomGetPosition: public PluginActionAtom<
+			SmartRobotActionPlugin> {
 	public:
 		SmartRobotActionAtomGetPosition();
 	private:
 		virtual void retrieve(const Environment& environment,
-									 const Query& query, Answer& answer);
+				const Query& query, Answer& answer);
 	};
-	
-	class SmartRobotActionAtomPreviousMovement: public PluginActionAtom<SmartRobotActionPlugin> {
+
+	class SmartRobotActionAtomPreviousMovement: public PluginActionAtom<
+			SmartRobotActionPlugin> {
 	public:
 		SmartRobotActionAtomPreviousMovement();
 	private:
 		virtual void retrieve(const Environment& environment,
-									 const Query& query, Answer& answer);
+				const Query& query, Answer& answer);
 	};
-	
-	class SmartRobotActionAtomWeights: public PluginActionAtom<SmartRobotActionPlugin> {
+
+	class SmartRobotActionAtomWeights: public PluginActionAtom<
+			SmartRobotActionPlugin> {
 	public:
 		SmartRobotActionAtomWeights();
 	private:
 		virtual void retrieve(const Environment& environment,
-									 const Query& query, Answer& answer);
+				const Query& query, Answer& answer);
+	};
+
+	class SmartRobotActionAtomGetNumberOfTimes: public PluginActionAtom<
+			SmartRobotActionPlugin> {
+	public:
+		SmartRobotActionAtomGetNumberOfTimes();
+	private:
+		virtual void retrieve(const Environment& environment,
+				const Query& query, Answer& answer);
+	};
+
+	class SmartRobotActionAtomFoundTreasure: public PluginActionAtom<
+			SmartRobotActionPlugin> {
+	public:
+		SmartRobotActionAtomFoundTreasure();
+	private:
+		virtual void retrieve(const Environment& environment,
+				const Query& query, Answer& answer);
 	};
 
 	class SmartRobotAction: public PluginAction<SmartRobotActionPlugin> {
@@ -123,10 +151,10 @@ public:
 	public:
 
 		SmartRobotAction();
-		
+
 	private:
-		virtual void execute(Environment&, RegistryPtr,
-				const Tuple&, const InterpretationConstPtr);
+		virtual void execute(Environment&, RegistryPtr, const Tuple&,
+				const InterpretationConstPtr);
 
 	};
 
@@ -142,7 +170,8 @@ protected:
 #warning a trick, maybe we should find a way remove it
 		ctx.getPluginEnvironment<SmartRobotActionPlugin>();
 		std::cerr << "getPluginEnvironment done" << std::endl;
-		return boost::shared_ptr < SmartRobotActionPlugin > (new SmartRobotActionPlugin());
+		return boost::shared_ptr < SmartRobotActionPlugin
+				> (new SmartRobotActionPlugin());
 	}
 
 };

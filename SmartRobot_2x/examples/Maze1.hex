@@ -70,7 +70,7 @@ wall(24, C) :- #int(C), C > 63, C <= 80.
 wall(R, 80) :- #int(R), R > 24, R <= 35.
 wall(R, 88) :- #int(R), R > 20, R <= 32.
 
-% position of robot
+% position of Robot
 starting_position(14, 44).
 
 #smartRobot[setDimension, R, C]{b, 1} :- rows(R), columns(C), &firstExecution[]().
@@ -80,3 +80,8 @@ starting_position(14, 44).
 #smartRobot[setPosition, R, C]{b, 3} :- &firstExecution[](), starting_position(R, C).
 
 #smartRobot[finishedFirstExecution, 0, 0]{b, 50} :- &firstExecution[]().
+
+% position of Treasure
+#smartRobot[putTreasure, 22, 92]{b, 50} :- &firstExecution[]().
+
+#acthexStop{b} :- &foundTreasure[]().

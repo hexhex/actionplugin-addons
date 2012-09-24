@@ -18,29 +18,8 @@ public:
 
 	class Environment: public PluginEnvironment {
 	public:
-		Environment() {
-			name = "EnvironmentOfSmartRobotActionPlugin";
-
-			currentRows = 10;
-			currentColumns = 10;
-			createMaze();
-
-			firstExecution = true;
-
-			currentPositionColumn = 0;
-			currentPositionRow = 0;
-
-			previousMovement = "none";
-
-			numberOfUp = 0;
-			numberOfDown = 0;
-			numberOfLeft = 0;
-			numberOfRight = 0;
-
-		}
-		virtual ~Environment() {
-		}
-		;
+		Environment();
+		virtual ~Environment();
 		void addWall(unsigned int, unsigned int);
 		void setDimension(unsigned int, unsigned int);
 		void setCurrentPosition(unsigned int, unsigned int);
@@ -52,7 +31,7 @@ public:
 		unsigned int getCurrentColumns() const;
 		void setPosition(unsigned int, unsigned int);
 		bool isTheFirstExecution() const;
-		void refresh();
+		void refresh() const;
 		void moveUp();
 		void moveDown();
 		void moveLeft();
@@ -66,6 +45,9 @@ public:
 		unsigned int getNumberOfTimes(unsigned int, unsigned int) const;
 		bool foundTreasure() const;
 		void putTreasure(unsigned int, unsigned int);
+		void addDetectedWall(unsigned int, unsigned int);
+		bool theRobotExploredTheWholeMaze() const;
+		void printMazeDetectedByTheRobot() const;
 	private:
 		std::string name;
 		bool ** maze; //true if there is a wall, false otherwise
@@ -83,6 +65,7 @@ public:
 		unsigned int ** numberOfTimes; //the number of times that the robot has been in each cell
 		unsigned int treasureRow;
 		unsigned int treasureColumn;
+		bool ** mazeDetectedByTheRobot; //the maze detected by the robot
 	};
 
 	SmartRobotActionPlugin() :
@@ -146,6 +129,15 @@ public:
 				const Query& query, Answer& answer);
 	};
 
+	class SmartRobotActionAtomExploredTheWholeMaze: public PluginActionAtom<
+			SmartRobotActionPlugin> {
+	public:
+		SmartRobotActionAtomExploredTheWholeMaze();
+	private:
+		virtual void retrieve(const Environment& environment,
+				const Query& query, Answer& answer);
+	};
+
 	class SmartRobotAction: public PluginAction<SmartRobotActionPlugin> {
 
 	public:
@@ -166,10 +158,10 @@ public:
 protected:
 
 	ActionPluginInterfacePtr create(ProgramCtx& ctx) {
-		std::cerr << "create in SmartRobotActionPlugin" << std::endl;
+		DBGLOG(PLUGIN, "create in SmartRobotActionPlugin");
 #warning a trick, maybe we should find a way remove it
 		ctx.getPluginEnvironment<SmartRobotActionPlugin>();
-		std::cerr << "getPluginEnvironment done" << std::endl;
+		DBGLOG(PLUGIN, "getPluginEnvironment done");
 		return boost::shared_ptr < SmartRobotActionPlugin
 				> (new SmartRobotActionPlugin());
 	}

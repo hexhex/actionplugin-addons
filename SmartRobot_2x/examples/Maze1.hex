@@ -73,15 +73,18 @@ wall(R, 88) :- #int(R), R > 20, R <= 32.
 % position of Robot
 starting_position(14, 44).
 
+firstExecution :- &firstExecution[]().
+
 #smartRobot[setDimension, R, C]{b, 1} :- rows(R), columns(C), &firstExecution[]().
 
-#smartRobot[addWall, R, C]{b, 2} :- wall(R, C), &firstExecution[]().
+#smartRobot[addWall, R, C]{b, 2} :- wall(R, C), firstExecution.
 
-#smartRobot[setPosition, R, C]{b, 3} :- &firstExecution[](), starting_position(R, C).
+#smartRobot[setPosition, R, C]{b, 3} :- firstExecution, starting_position(R, C).
 
-#smartRobot[finishedFirstExecution, 0, 0]{b, 50} :- &firstExecution[]().
+#smartRobot[finishedFirstExecution, 0, 0]{b, 50} :- firstExecution.
 
 % position of Treasure
-#smartRobot[putTreasure, 22, 92]{b, 50} :- &firstExecution[]().
-
-#acthexStop{b} :- &foundTreasure[]().
+%#smartRobot[putTreasure, 22, 92]{b, 50} :- firstExecution.
+%#smartRobot[putTreasure, 10, 4]{b, 50} :- firstExecution.
+%#smartRobot[putTreasure, 11, 36]{b, 50} :- firstExecution.
+#smartRobot[putTreasure, 11, 28]{b, 50} :- firstExecution.

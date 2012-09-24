@@ -1,0 +1,16 @@
+
+#smartRobot[addDetectedWall, R_m_1, C]{b, 5} :- not canMoveUp, current_position(R, C), R = R_m_1 + 1, row(R_m_1).
+
+#smartRobot[addDetectedWall, R_p_1, C]{b, 5} :- not canMoveDown, current_position(R, C), R_p_1 = R + 1, row(R_p_1).
+
+#smartRobot[addDetectedWall, R, C_m_1]{b, 5} :- not canMoveLeft, current_position(R, C), C = C_m_1 + 1, column(C_m_1).
+
+#smartRobot[addDetectedWall, R, C_p_1]{b, 5} :- not canMoveRight, current_position(R, C), C_p_1 = C + 1, column(C_p_1).
+
+#smartRobot[addDetectedWall, R_m_1, C_m_1]{b, 5} :- not canMoveUp, not canMoveLeft, current_position(R, C), R = R_m_1 + 1, row(R_m_1), C = C_m_1 + 1, column(C_m_1).
+
+#smartRobot[addDetectedWall, R_m_1, C_p_1]{b, 5} :- not canMoveUp, not canMoveRight, current_position(R, C), R = R_m_1 + 1, row(R_m_1), C_p_1 = C + 1, column(C_p_1).
+
+#smartRobot[addDetectedWall, R_p_1, C_m_1]{b, 5} :- not canMoveDown, not canMoveLeft, current_position(R, C), R_p_1 = R + 1, row(R_p_1), C = C_m_1 + 1, column(C_m_1).
+
+#smartRobot[addDetectedWall, R_p_1, C_p_1]{b, 5} :- not canMoveDown, not canMoveRight, current_position(R, C), R_p_1 = R + 1, row(R_p_1), C_p_1 = C + 1, column(C_p_1).

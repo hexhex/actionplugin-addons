@@ -1,0 +1,24 @@
+row(0).row(1).row(2).row(3).row(4).row(5).row(6).row(7).row(8).
+column(0).column(1).column(2).column(3).column(4).column(5).column(6).column(7).column(8).
+number(1).number(2).number(3).number(4).number(5).number(6).number(7).number(8).number(9).
+
+firstExecution :- &firstExecutionOfSudoku[]().
+
+#sudoku[resetChanged, 0, 0, 0]{b, 1}.
+
+#sudoku[insertNumberNotCandidate, 1, 1, 1]{b, 5} :- firstExecution.
+#sudoku[insertNumberNotCandidate, 1, 1, 3]{b, 5} :- firstExecution.
+#sudoku[insertNumberNotCandidate, 1, 1, 4]{b, 5} :- firstExecution.
+#sudoku[insertNumberNotCandidate, 1, 1, 5]{b, 5} :- firstExecution.
+#sudoku[insertNumberNotCandidate, 1, 1, 6]{b, 5} :- firstExecution.
+#sudoku[insertNumberNotCandidate, 1, 1, 7]{b, 5} :- firstExecution.
+#sudoku[insertNumberNotCandidate, 1, 1, 8]{b, 5} :- firstExecution.
+#sudoku[insertNumberNotCandidate, 1, 1, 9]{b, 5} :- firstExecution.
+
+#sudoku[printWithThePossibilities, 0, 0, 0]{b, 10} :- not sudokuIsCompleted.
+
+#sudoku[finishedFirstExecution, 0, 0, 0]{b, 100} :- firstExecution.
+
+sudokuIsCompleted :- &sudokuIsCompleted[]().
+
+#acthexContinue{b} :- not sudokuIsCompleted.

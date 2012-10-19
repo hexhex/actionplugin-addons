@@ -1,0 +1,22 @@
+row(0).row(1).row(2).row(3).row(4).row(5).row(6).row(7).row(8).
+column(0).column(1).column(2).column(3).column(4).column(5).column(6).column(7).column(8).
+number(1).number(2).number(3).number(4).number(5).number(6).number(7).number(8).number(9).
+
+firstExecution :- &firstExecutionOfSudoku[]().
+numbers(R, C, N) :- &getNumber[R, C](N), row(R), column(C).
+
+#sudoku[resetChanged, 0, 0, 0]{b, 1}.
+
+#sudoku[insertNumber, 1, 2, 3]{b, 3} :- firstExecution.
+
+#sudoku[insertNumber, R_p_1, C, N_p_1]{b, 5} :- numbers(R, C, N), R_p_1 = R + 1, N_p_1 = N + 1, numbers(R_p_1, C, N_R_p_1), N_R_p_1 = 0, row(R), row(R_p_1), column(C), number(N), number(N_p_1).
+
+#sudoku[printWithThePossibilities, 0, 0, 0]{b, 10}.
+#sudoku[writeToFile, "fileOutput.txt", 0, 0]{b, 10}.
+
+#sudoku[finishedFirstExecution, 0, 0, 0]{b, 100} :- firstExecution.
+
+sudokuIsCompleted :- &sudokuIsCompleted[]().
+
+#acthexContinue{b} :- not sudokuIsCompleted.
+%#acthexStop{b} :- sudokuIsCompleted.

@@ -2,7 +2,7 @@
  * @file SmartRobotActionPlugin.cpp
  * @author Stefano Germano
  *
- * @brief ...
+ * @brief A simple Plugin of ActionPlugin that implements a Smart Robot
  */
 
 #ifdef HAVE_CONFIG_H

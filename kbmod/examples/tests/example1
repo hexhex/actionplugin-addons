@@ -1,0 +1,15 @@
+reachable(X) :- edge(X,Y).
+edge(X,Y) :- edge(Y,X).
+#retract["example1", exact, "vertex(", Z, ")"]{b,1} :- disconnected(Z).
+#assert["disconnected", "vertex(", Z,")."]{b,2} :- disconnected(Z).
+disconnected(X) :- not reachable(X), vertex(X).
+
+vertex(1).
+vertex(2).
+vertex(3).
+vertex(4).
+vertex(5).
+vertex(6).
+edge(1,2).
+edge(3,2).
+edge(3,4).

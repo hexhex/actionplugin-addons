@@ -2,7 +2,7 @@
  * @file SmartRobotActionPlugin.h
  * @author Stefano Germano
  *
- * @brief ...
+ * @brief A simple Plugin of ActionPlugin that implements a Smart Robot
  */
 
 #ifndef SMART_ROBOT_ACTION_PLUGIN_H_

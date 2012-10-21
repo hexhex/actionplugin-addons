@@ -7,3 +7,6 @@
 [submodule "Sudoku_2x/dlvhex-common"]
 	path = Sudoku_2x/dlvhex-common
 	url = git@github.com:hexex/actionplugin-addons.git
+[submodule "kbmod/dlvhex-common"]
+	path = kbmod/dlvhex-common
+	url = git@github.com:hexex/actionplugin-addons.git

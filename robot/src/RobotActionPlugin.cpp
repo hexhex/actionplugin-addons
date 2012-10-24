@@ -225,7 +225,7 @@ void RobotActionPlugin::RobotAction::rightCorridor() {
 void RobotActionPlugin::RobotAction::execute(Environment& environment,
 		RegistryPtr pregistry, const Tuple& parms,
 		InterpretationConstPtr interpretationPtr) {
-  Registry& registry = *pregistry;
+	Registry& registry = *pregistry;
 
 	int c = system("clear");
 

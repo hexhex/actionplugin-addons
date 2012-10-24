@@ -1,0 +1,71 @@
+
+#maxint=100.
+
+% with rows(30). and columns(64). is a square
+rows(19).
+columns(25).
+row(R) :- #int(R), R < Rs, rows(Rs).
+column(C) :- #int(C), C < Cs, columns(Cs).
+
+% first row
+wall(0, C) :- #int(C), columns(Cs), C < Cs.
+
+% last row
+wall(Lr, C) :- rows(Rs), #int(Lr), Lr = Rs - 1, #int(C), columns(Cs), C < Cs.
+
+% first column
+wall(R, 0) :- #int(R), rows(Rs), R < Rs.
+
+% last column
+wall(R, Lc) :- #int(R), rows(Rs), R < Rs, columns(Cs), #int(Lc), Lc = Cs - 1.
+
+% other walls
+wall(R, 2) :- #int(R), R > 0, R <= 12.
+wall(12, C) :- #int(C), C > 2, C <= 5.
+wall(R, 4) :- #int(R), R > 0, R <= 10.
+wall(R, 6) :- #int(R), R > 1, R <= 12.
+wall(2, C) :- #int(C), C > 6, C <= 16.
+wall(14, C) :- #int(C), C > 1, C <= 8.
+wall(R, 2) :- #int(R), R > 14, R <= 16.
+wall(16, C) :- #int(C), C > 2, C <= 6.
+wall(R, 8) :- #int(R), R > 11, R <= 17.
+wall(R, 8) :- #int(R), R > 3, R <= 10.
+wall(12, C) :- #int(C), C > 7, C <= 10.
+wall(R, 10) :- #int(R), R > 5, R <= 11.
+wall(4, C) :- #int(C), C > 7, C <= 12.
+wall(8, C) :- #int(C), C > 10, C <= 12.
+wall(R, 12) :- #int(R), R > 4, R <= 8.
+wall(R, 10) :- #int(R), R > 14, R <= 16.
+wall(R, 12) :- #int(R), R > 9, R <= 14.
+wall(14, C) :- #int(C), C > 9, C <= 12.
+wall(R, 14) :- #int(R), R > 3, R <= 14.
+wall(R, 16) :- #int(R), R > 1, R <= 5.
+wall(6, C) :- #int(C), C > 15, C <= 20.
+wall(R, 18) :- #int(R), R > 1, R <= 4.
+wall(R, 20) :- #int(R), R > 0, R <= 3.
+wall(4, C) :- #int(C), C > 18, C <= 20.
+wall(R, 22) :- #int(R), R > 1, R <= 8.
+wall(8, C) :- #int(C), C > 14, C <= 22.
+wall(16, C) :- #int(C), C > 10, C <= 18.
+wall(R, 18) :- #int(R), R > 14, R <= 16.
+wall(14, C) :- #int(C), C > 14, C <= 18.
+wall(10, C) :- #int(C), C > 15, C <= 24.
+wall(12, C) :- #int(C), C > 15, C <= 20.
+wall(R, 20) :- #int(R), R > 12, R <= 17.
+wall(R, 22) :- #int(R), R > 10, R <= 16.
+
+% position of Robot
+starting_position(1, 1).
+
+firstExecution :- &firstExecution[]().
+
+#smartRobot[setDimension, R, C]{b, 1} :- rows(R), columns(C), &firstExecution[]().
+
+#smartRobot[addWall, R, C]{b, 2} :- wall(R, C), firstExecution.
+
+#smartRobot[setPosition, R, C]{b, 3} :- firstExecution, starting_position(R, C).
+
+#smartRobot[finishedFirstExecution, 0, 0]{b, 50} :- firstExecution.
+
+% position of Treasure
+#smartRobot[putTreasure, 11, 23]{b, 50} :- firstExecution.

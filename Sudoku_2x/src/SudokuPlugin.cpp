@@ -175,7 +175,7 @@ void SudokuPlugin::Environment::finishedFirstExecution() {
 bool SudokuPlugin::Environment::isCompleted() const {
 
 	if (!changed) {
-		std::cerr << "There has been no addition in the last iteration"
+		std::cout << "There has been no addition in the last iteration"
 				<< std::endl;
 		return true;
 	}
@@ -185,7 +185,79 @@ bool SudokuPlugin::Environment::isCompleted() const {
 			if (grid[i][j] == 0)
 				return false;
 
-	std::cerr << "The sudoku has been completed" << std::endl;
+	std::cout << "The sudoku has been completed ";
+	if(isCorrect())
+		std::cout << "and it's correct!" << std::endl;
+	else
+		std::cout << "and it isn't correct!" << std::endl;
+
+	return true;
+
+}
+
+bool SudokuPlugin::Environment::isCorrect() const {
+
+	bool numbers_controlled[NUMBERS];
+
+	// rows
+	for (unsigned int i = 0; i < ROWS; i++) {
+
+		for (unsigned int j = 0; j < NUMBERS; j++)
+			numbers_controlled[j] = false;
+
+		for (unsigned int j = 0; j < COLUMNS; j++)
+			if(numbers_controlled[grid[i][j] - 1])
+				return false;
+			else
+				numbers_controlled[grid[i][j] - 1] = true;
+
+	}
+
+	// columns
+	for (unsigned int i = 0; i < COLUMNS; i++) {
+
+		for (unsigned int j = 0; j < NUMBERS; j++)
+			numbers_controlled[j] = false;
+
+		for (unsigned int j = 0; j < ROWS; j++)
+			if(numbers_controlled[grid[j][i] - 1])
+				return false;
+			else
+				numbers_controlled[grid[j][i] - 1] = true;
+
+	}
+
+	//sub-grids 3x3
+	for (unsigned int i = 0; i < ROWS; i+=3) {
+
+		for (unsigned int j = 0; j < NUMBERS; j++)
+			numbers_controlled[j] = false;
+
+		for (unsigned int j = 0; j < COLUMNS / 3; j++)
+			if(numbers_controlled[grid[i][j] - 1])
+				return false;
+			else
+				numbers_controlled[grid[i][j] - 1] = true;
+
+		for (unsigned int j = 0; j < NUMBERS; j++)
+			numbers_controlled[j] = false;
+
+		for (unsigned int j = COLUMNS / 3; j < COLUMNS * 2 / 3; j++)
+			if(numbers_controlled[grid[i][j] - 1])
+				return false;
+			else
+				numbers_controlled[grid[i][j] - 1] = true;
+
+		for (unsigned int j = 0; j < NUMBERS; j++)
+			numbers_controlled[j] = false;
+
+		for (unsigned int j = COLUMNS * 2 / 3; j < COLUMNS; j++)
+			if(numbers_controlled[grid[i][j] - 1])
+				return false;
+			else
+				numbers_controlled[grid[i][j] - 1] = true;
+
+	}
 
 	return true;
 

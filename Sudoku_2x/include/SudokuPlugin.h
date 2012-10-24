@@ -44,6 +44,7 @@ public:
 		bool firstExecution;
 		bool *** gridNotCandidates;
 		bool changed;
+		bool isCorrect() const;
 	};
 
 	SudokuPlugin() :

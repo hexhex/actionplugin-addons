@@ -99,10 +99,10 @@ public:
 protected:
 
 	ActionPluginInterfacePtr create(ProgramCtx& ctx) {
-		std::cerr << "create in RobotActionPlugin" << std::endl;
+		DBGLOG(PLUGIN, "create in RobotActionPlugin");
 #warning a trick, maybe we should find a way remove it
 		ctx.getPluginEnvironment<RobotActionPlugin>();
-		std::cerr << "getPluginEnvironment done" << std::endl;
+		DBGLOG(PLUGIN, "getPluginEnvironment done");
 		return boost::shared_ptr < RobotActionPlugin > (new RobotActionPlugin());
 	}
 

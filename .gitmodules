@@ -9,4 +9,4 @@
 	url = git@github.com:hexhex/build.git
 [submodule "kbmod/dlvhex-common"]
 	path = kbmod/dlvhex-common
-	url = git@github.com:hexex/actionplugin-addons.git
+	url = git@github.com:hexhex/build.git

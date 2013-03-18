@@ -27,9 +27,9 @@ public:
 		unsigned int getNumber(unsigned int, unsigned int) const;
 		void print(std::ostream&) const;
 		void writeToFile(std::string) const;
-		static const unsigned int ROWS = 9;
-		static const unsigned int COLUMNS = 9;
-		static const unsigned int NUMBERS = 9;
+//		static const unsigned int ROWS = 9;
+//		static const unsigned int COLUMNS = 9;
+//		static const unsigned int NUMBERS = 9;
 		bool isTheFirstExecution() const;
 		void finishedFirstExecution();
 		bool isCompleted() const;
@@ -38,13 +38,18 @@ public:
 		void insertNumberNotCandidate(unsigned int, unsigned int, unsigned int);
 		void resetChanged();
 		void printWithThePossibilities(std::ostream&) const;
+		void setDimension(unsigned int);
 	private:
 		std::string name;
 		unsigned int ** grid;
+		unsigned int numbers;
+		unsigned int subNumbers;
 		bool firstExecution;
 		bool *** gridNotCandidates;
 		bool changed;
 		bool isCorrect() const;
+		void createGrids();
+		void destroyGrids();
 	};
 
 	SudokuPlugin() :

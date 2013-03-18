@@ -23,8 +23,6 @@ public:
 		void addWall(unsigned int, unsigned int);
 		void setDimension(unsigned int, unsigned int);
 		void setCurrentPosition(unsigned int, unsigned int);
-		void createMaze();
-		void destroyMaze();
 		unsigned int getCurrentPositionRow() const;
 		unsigned int getCurrentPositionColumn() const;
 		unsigned int getCurrentRows() const;
@@ -66,6 +64,8 @@ public:
 		unsigned int treasureRow;
 		unsigned int treasureColumn;
 		bool ** mazeDetectedByTheRobot; //the maze detected by the robot
+		void createMaze();
+		void destroyMaze();
 	};
 
 	SmartRobotActionPlugin() :

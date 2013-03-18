@@ -12,61 +12,105 @@
 
 #include <fstream>
 
+//#include <cmath>
+//using namespace std;
+
 DLVHEX_NAMESPACE_BEGIN
 
 SudokuPlugin::Environment::Environment() {
+
 	name = "EnvironmentOfSudokuPlugin";
 
 	firstExecution = true;
 
-	grid = new unsigned int *[ROWS];
-	gridNotCandidates = new bool **[ROWS];
-	for (unsigned int i = 0; i < ROWS; i++) {
-		grid[i] = new unsigned int[COLUMNS];
+	numbers = 9;
+	subNumbers = 3;
 
-		gridNotCandidates[i] = new bool *[COLUMNS];
-	}
-
-	for (unsigned int i = 0; i < ROWS; i++)
-		for (unsigned int j = 0; j < COLUMNS; j++) {
-			grid[i][j] = 0;
-
-			gridNotCandidates[i][j] = new bool[NUMBERS];
-
-			for (unsigned int k = 0; k < NUMBERS; k++)
-				gridNotCandidates[i][j][k] = false;
-		}
+	createGrids();
 
 	changed = true;
 
 }
 
 SudokuPlugin::Environment::~Environment() {
+	destroyGrids();
+}
 
-	for (unsigned int i = 0; i < ROWS; i++)
+void SudokuPlugin::Environment::createGrids() {
+
+	grid = new unsigned int *[numbers];
+	gridNotCandidates = new bool **[numbers];
+
+	for (unsigned int i = 0; i < numbers; i++) {
+		grid[i] = new unsigned int[numbers];
+
+		gridNotCandidates[i] = new bool *[numbers];
+	}
+
+	for (unsigned int i = 0; i < numbers; i++)
+		for (unsigned int j = 0; j < numbers; j++) {
+			grid[i][j] = 0;
+
+			gridNotCandidates[i][j] = new bool[numbers];
+
+			for (unsigned int k = 0; k < numbers; k++)
+				gridNotCandidates[i][j][k] = false;
+		}
+
+}
+
+void SudokuPlugin::Environment::destroyGrids() {
+
+	for (unsigned int i = 0; i < numbers; i++)
 		delete[] grid[i];
 
 	delete[] grid;
 
-	for (unsigned int i = 0; i < ROWS; i++)
-		for (unsigned int j = 0; j < COLUMNS; j++)
+	for (unsigned int i = 0; i < numbers; i++)
+		for (unsigned int j = 0; j < numbers; j++)
 			delete[] gridNotCandidates[i][j];
 
-	for (unsigned int i = 0; i < ROWS; i++)
+	for (unsigned int i = 0; i < numbers; i++)
 		delete[] gridNotCandidates[i];
 
 	delete[] gridNotCandidates;
 
 }
 
+void SudokuPlugin::Environment::setDimension(unsigned int n) {
+
+	if (n < 4)
+		throw PluginError("Cannot set a dimension under 4");
+
+	double subN = std::sqrt(n);
+
+	if (subN - std::floor(subN) != 0)
+		throw PluginError("Cannot set a dimension that isn't the square of an integer");
+
+	if (n == numbers) {
+		DBGLOG(PLUGIN, "The new dimension is the same as before");
+		return;
+	}
+
+	DBGLOG(PLUGIN, "New dimension " << n);
+
+	destroyGrids();
+
+	numbers = n;
+	subNumbers = std::floor(subN);
+
+	createGrids();
+
+}
+
 void SudokuPlugin::Environment::insertNumber(unsigned int row,
 		unsigned int column, unsigned int number) {
 
-	if (row >= ROWS || column >= COLUMNS)
+	if (row >= numbers || column >= numbers)
 		throw PluginError(
 				"Wrong input argument type (row or column in insertNumber)");
 
-	if (number == 0 || number > 9)
+	if (number == 0 || number > numbers)
 		throw PluginError("Wrong input argument type (number in insertNumber)");
 
 	grid[row][column] = number;
@@ -80,7 +124,7 @@ void SudokuPlugin::Environment::insertNumber(unsigned int row,
 unsigned int SudokuPlugin::Environment::getNumber(unsigned int row,
 		unsigned int column) const {
 
-	if (row >= ROWS || column >= COLUMNS)
+	if (row >= numbers || column >= numbers)
 		throw PluginError("Wrong input argument type (in getNumber)");
 
 	return grid[row][column];
@@ -90,25 +134,25 @@ unsigned int SudokuPlugin::Environment::getNumber(unsigned int row,
 void SudokuPlugin::Environment::print(std::ostream& output) const {
 
 	output << "  ";
-	for (unsigned int j = 0; j < COLUMNS; j++) {
+	for (unsigned int j = 0; j < numbers; j++) {
 		output << "--- ";
-		if ((j + 1) % 3 == 0)
+		if ((j + 1) % subNumbers == 0)
 			output << " ";
 	}
 	output << std::endl;
 
 	output << "  ";
-	for (unsigned int j = 0; j < COLUMNS; j++) {
+	for (unsigned int j = 0; j < numbers; j++) {
 		output << "--- ";
-		if ((j + 1) % 3 == 0)
+		if ((j + 1) % subNumbers == 0)
 			output << " ";
 	}
 	output << std::endl;
 
-	for (unsigned int i = 0; i < ROWS; i++) {
+	for (unsigned int i = 0; i < numbers; i++) {
 		output << "||";
 
-		for (unsigned int j = 0; j < COLUMNS; j++) {
+		for (unsigned int j = 0; j < numbers; j++) {
 			output << " ";
 
 			if (grid[i][j] == 0)
@@ -116,28 +160,31 @@ void SudokuPlugin::Environment::print(std::ostream& output) const {
 			else
 				output << grid[i][j];
 
-			output << " |";
+			if(grid[i][j] < 10)
+				output << " ";
 
-			if ((j + 1) % 3 == 0)
+			output << "|";
+
+			if ((j + 1) % subNumbers == 0)
 				output << "|";
 		}
 
 		output << std::endl;
 
 		output << "  ";
-		for (unsigned int j = 0; j < COLUMNS; j++) {
+		for (unsigned int j = 0; j < numbers; j++) {
 			output << "--- ";
-			if ((j + 1) % 3 == 0)
+			if ((j + 1) % subNumbers == 0)
 				output << " ";
 		}
 		output << std::endl;
 
-		if ((i + 1) % 3 == 0) {
+		if ((i + 1) % subNumbers == 0) {
 
 			output << "  ";
-			for (unsigned int j = 0; j < COLUMNS; j++) {
+			for (unsigned int j = 0; j < numbers; j++) {
 				output << "--- ";
-				if ((j + 1) % 3 == 0)
+				if ((j + 1) % subNumbers == 0)
 					output << " ";
 			}
 			output << std::endl;
@@ -180,8 +227,8 @@ bool SudokuPlugin::Environment::isCompleted() const {
 		return true;
 	}
 
-	for (unsigned int i = 0; i < ROWS; i++)
-		for (unsigned int j = 0; j < COLUMNS; j++)
+	for (unsigned int i = 0; i < numbers; i++)
+		for (unsigned int j = 0; j < numbers; j++)
 			if (grid[i][j] == 0)
 				return false;
 
@@ -197,15 +244,15 @@ bool SudokuPlugin::Environment::isCompleted() const {
 
 bool SudokuPlugin::Environment::isCorrect() const {
 
-	bool numbers_controlled[NUMBERS];
+	bool numbers_controlled[numbers];
 
-	// rows
-	for (unsigned int i = 0; i < ROWS; i++) {
+	// numbers
+	for (unsigned int i = 0; i < numbers; i++) {
 
-		for (unsigned int j = 0; j < NUMBERS; j++)
+		for (unsigned int j = 0; j < numbers; j++)
 			numbers_controlled[j] = false;
 
-		for (unsigned int j = 0; j < COLUMNS; j++)
+		for (unsigned int j = 0; j < numbers; j++)
 			if(numbers_controlled[grid[i][j] - 1])
 				return false;
 			else
@@ -213,13 +260,13 @@ bool SudokuPlugin::Environment::isCorrect() const {
 
 	}
 
-	// columns
-	for (unsigned int i = 0; i < COLUMNS; i++) {
+	// numbers
+	for (unsigned int i = 0; i < numbers; i++) {
 
-		for (unsigned int j = 0; j < NUMBERS; j++)
+		for (unsigned int j = 0; j < numbers; j++)
 			numbers_controlled[j] = false;
 
-		for (unsigned int j = 0; j < ROWS; j++)
+		for (unsigned int j = 0; j < numbers; j++)
 			if(numbers_controlled[grid[j][i] - 1])
 				return false;
 			else
@@ -227,31 +274,31 @@ bool SudokuPlugin::Environment::isCorrect() const {
 
 	}
 
-	//sub-grids 3x3
-	for (unsigned int i = 0; i < ROWS; i+=3) {
+	//sub-grids subNumbers x subNumbers
+	for (unsigned int i = 0; i < numbers; i+=subNumbers) {
 
-		for (unsigned int j = 0; j < NUMBERS; j++)
+		for (unsigned int j = 0; j < numbers; j++)
 			numbers_controlled[j] = false;
 
-		for (unsigned int j = 0; j < COLUMNS / 3; j++)
+		for (unsigned int j = 0; j < numbers / subNumbers; j++)
 			if(numbers_controlled[grid[i][j] - 1])
 				return false;
 			else
 				numbers_controlled[grid[i][j] - 1] = true;
 
-		for (unsigned int j = 0; j < NUMBERS; j++)
+		for (unsigned int j = 0; j < numbers; j++)
 			numbers_controlled[j] = false;
 
-		for (unsigned int j = COLUMNS / 3; j < COLUMNS * 2 / 3; j++)
+		for (unsigned int j = numbers / subNumbers; j < numbers * 2 / subNumbers; j++)
 			if(numbers_controlled[grid[i][j] - 1])
 				return false;
 			else
 				numbers_controlled[grid[i][j] - 1] = true;
 
-		for (unsigned int j = 0; j < NUMBERS; j++)
+		for (unsigned int j = 0; j < numbers; j++)
 			numbers_controlled[j] = false;
 
-		for (unsigned int j = COLUMNS * 2 / 3; j < COLUMNS; j++)
+		for (unsigned int j = numbers * 2 / subNumbers; j < numbers; j++)
 			if(numbers_controlled[grid[i][j] - 1])
 				return false;
 			else
@@ -266,24 +313,24 @@ bool SudokuPlugin::Environment::isCorrect() const {
 const list<unsigned int> SudokuPlugin::Environment::getNumbersNotCandidates(
 		unsigned int row, unsigned int column) const {
 
-	list<unsigned int> numbers;
+	list<unsigned int> numbersNotCandidates;
 
-	for (unsigned int k = 0; k < NUMBERS; k++)
+	for (unsigned int k = 0; k < numbers; k++)
 		if (gridNotCandidates[row][column][k])
-			numbers.push_back(k + 1);
+			numbersNotCandidates.push_back(k + 1);
 
-	return numbers;
+	return numbersNotCandidates;
 
 }
 
 void SudokuPlugin::Environment::insertNumberNotCandidate(unsigned int row,
 		unsigned int column, unsigned int number) {
 
-	if (row >= ROWS || column >= COLUMNS)
+	if (row >= numbers || column >= numbers)
 		throw PluginError(
 				"Wrong input argument type (row or column in insertNumberNotCandidate)");
 
-	if (number == 0 || number > 9)
+	if (number == 0 || number > numbers)
 		throw PluginError(
 				"Wrong input argument type (number in insertNumberNotCandidate)");
 
@@ -293,14 +340,14 @@ void SudokuPlugin::Environment::insertNumberNotCandidate(unsigned int row,
 
 	unsigned int number_candidate = 0;
 	unsigned int k = 0;
-	for (; k < NUMBERS; k++)
+	for (; k < numbers; k++)
 		if (!gridNotCandidates[row][column][k])
 			if (number_candidate != 0)
 				break;
 			else
 				number_candidate = k + 1;
 
-	if (k == NUMBERS)
+	if (k == numbers)
 		if (number_candidate == 0)
 			throw PluginError("There isn't remained any candidate number");
 		else {
@@ -321,29 +368,33 @@ void SudokuPlugin::Environment::resetChanged() {
 void SudokuPlugin::Environment::printWithThePossibilities(
 		std::ostream& output) const {
 
+	// Can be printed also for Sudoku numbersxnumbers
+	if(numbers != 9)
+		return;
+
 	output << "  ";
-	for (unsigned int j = 0; j < COLUMNS; j++) {
+	for (unsigned int j = 0; j < numbers; j++) {
 		output << "--------- ";
-		if ((j + 1) % 3 == 0)
+		if ((j + 1) % subNumbers == 0)
 			output << " ";
 	}
 	output << std::endl;
 
 	output << "  ";
-	for (unsigned int j = 0; j < COLUMNS; j++) {
+	for (unsigned int j = 0; j < numbers; j++) {
 		output << "--------- ";
-		if ((j + 1) % 3 == 0)
+		if ((j + 1) % subNumbers == 0)
 			output << " ";
 	}
 	output << std::endl;
 
-	for (unsigned int i = 0; i < ROWS; i++) {
+	for (unsigned int i = 0; i < numbers; i++) {
 
-		for (unsigned int k = 0; k < NUMBERS; k += 3) {
+		for (unsigned int k = 0; k < numbers; k += subNumbers) {
 
 			output << "||";
 
-			for (unsigned int j = 0; j < COLUMNS; j++) {
+			for (unsigned int j = 0; j < numbers; j++) {
 
 				output << " ";
 
@@ -361,10 +412,10 @@ void SudokuPlugin::Environment::printWithThePossibilities(
 					if (gridNotCandidates[i][j][k + 2])
 						output << " ";
 					else
-						output << k + 3;
+						output << k + subNumbers;
 					output << " ";
 				} else {
-					if (k == 3)
+					if (k == subNumbers)
 						output << "   " << grid[i][j] << "    ";
 					else
 						output << "        ";
@@ -372,7 +423,7 @@ void SudokuPlugin::Environment::printWithThePossibilities(
 
 				output << "|";
 
-				if ((j + 1) % 3 == 0)
+				if ((j + 1) % subNumbers == 0)
 					output << "|";
 			}
 
@@ -381,19 +432,19 @@ void SudokuPlugin::Environment::printWithThePossibilities(
 		}
 
 		output << "  ";
-		for (unsigned int j = 0; j < COLUMNS; j++) {
+		for (unsigned int j = 0; j < numbers; j++) {
 			output << "--------- ";
-			if ((j + 1) % 3 == 0)
+			if ((j + 1) % subNumbers == 0)
 				output << " ";
 		}
 		output << std::endl;
 
-		if ((i + 1) % 3 == 0) {
+		if ((i + 1) % subNumbers == 0) {
 
 			output << "  ";
-			for (unsigned int j = 0; j < COLUMNS; j++) {
+			for (unsigned int j = 0; j < numbers; j++) {
 				output << "--------- ";
-				if ((j + 1) % 3 == 0)
+				if ((j + 1) % subNumbers == 0)
 					output << " ";
 			}
 			output << std::endl;
@@ -567,7 +618,8 @@ void SudokuPlugin::SudokuAction::execute(Environment& environment,
 			== "printWithThePossibilities") {
 		int c = system("clear");
 		environment.printWithThePossibilities(std::cout);
-	}
+	} else if (registry.getTermStringByID(parms[0]) == "setDimension")
+		environment.setDimension(parms[1].address);
 
 }
 

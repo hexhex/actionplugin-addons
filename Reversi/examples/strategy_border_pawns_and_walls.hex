@@ -1,0 +1,53 @@
+% if in (Row, Column) there is a frontier pawn of the computer
+% frontierPawnOfComputer(Row, Column) :- pawnPlaced(Row, Column, C), myColor(C), closeToTheEmpty(Row, Column).
+
+
+% if a pawn has in the 9 cells adjacent to her a unoccupiedPosition
+% top-left
+% closeToTheEmpty(Row, Column) :- occupiedPosition(Row, Column), unoccupiedPosition(Row2, Column2), Row = Row2 + 1, Column = Column2 + 1.
+% top-center
+% closeToTheEmpty(Row, Column) :- occupiedPosition(Row, Column), unoccupiedPosition(Row2, Column), Row = Row2 + 1.
+% top-right
+% closeToTheEmpty(Row, Column) :- occupiedPosition(Row, Column), unoccupiedPosition(Row2, Column2), Row = Row2 + 1, Column2 = Column + 1.
+% center-left
+% closeToTheEmpty(Row, Column) :- occupiedPosition(Row, Column), unoccupiedPosition(Row, Column2), Column = Column2 + 1.
+% center-right
+% closeToTheEmpty(Row, Column) :- occupiedPosition(Row, Column), unoccupiedPosition(Row, Column2), Column2 = Column + 1.
+% bottom-left
+% closeToTheEmpty(Row, Column) :- occupiedPosition(Row, Column), unoccupiedPosition(Row2, Column2), Row2 = Row + 1, Column = Column2 + 1.
+% bottom-center
+% closeToTheEmpty(Row, Column) :- occupiedPosition(Row, Column), unoccupiedPosition(Row2, Column), Row2 = Row + 1.
+% bottom-right
+% closeToTheEmpty(Row, Column) :- occupiedPosition(Row, Column), unoccupiedPosition(Row2, Column2), Row2 = Row + 1, Column2 = Column + 1.
+
+
+% Pawns "eaten" in the current move with selectedPosition
+pawnTurnedWithCurrentMove(Row, ColonnaR) :- selectedPosition(Row, Column), betweenOnTheSameRow(Row, Column, Column2, ColonnaR), pawnPlaced(Row, Column2, C), myColor(C).
+pawnTurnedWithCurrentMove(RowR, Column) :- selectedPosition(Row, Column), betweenOnTheSameColumn(Row, Row2, Column, RowR), pawnPlaced(Row2, Column, C), myColor(C).
+pawnTurnedWithCurrentMove(RowR, ColonnaR) :- selectedPosition(Row, Column), betweenOnTheSameDiagonal(Row, Column, Row2, Column2, RowR, ColonnaR), pawnPlaced(Row2, Column2, C), myColor(C).
+
+
+% if a pawnTurnedWithCurrentMove is a frontier pawn
+frontierPawnOfComputerAfterCurrentMove(Row, Column) :- pawnTurnedWithCurrentMove(Row, Column), closeToTheEmpty(Row, Column).
+
+
+% if a pawn has in the 9 cells adjacent to her a unoccupiedPosition
+% top-left
+closeToTheEmpty(Row, Column) :- pawnTurnedWithCurrentMove(Row, Column), not pawnTurnedWithCurrentMove(Row2, Column2), unoccupiedPosition(Row2, Column2), Row = Row2 + 1, Column = Column2 + 1.
+% top-center
+closeToTheEmpty(Row, Column) :- pawnTurnedWithCurrentMove(Row, Column), not pawnTurnedWithCurrentMove(Row2, Column), unoccupiedPosition(Row2, Column), Row = Row2 + 1.
+% top-right
+closeToTheEmpty(Row, Column) :- pawnTurnedWithCurrentMove(Row, Column), not pawnTurnedWithCurrentMove(Row2, Column2), unoccupiedPosition(Row2, Column2), Row = Row2 + 1, Column2 = Column + 1.
+% center-left
+closeToTheEmpty(Row, Column) :- pawnTurnedWithCurrentMove(Row, Column), not pawnTurnedWithCurrentMove(Row, Column2), unoccupiedPosition(Row, Column2), Column = Column2 + 1.
+% center-right
+closeToTheEmpty(Row, Column) :- pawnTurnedWithCurrentMove(Row, Column), not pawnTurnedWithCurrentMove(Row, Column2), unoccupiedPosition(Row, Column2), Column2 = Column + 1.
+% bottom-left
+closeToTheEmpty(Row, Column) :- pawnTurnedWithCurrentMove(Row, Column), not pawnTurnedWithCurrentMove(Row2, Column2), unoccupiedPosition(Row2, Column2), Row2 = Row + 1, Column = Column2 + 1.
+% bottom-center
+closeToTheEmpty(Row, Column) :- pawnTurnedWithCurrentMove(Row, Column), not pawnTurnedWithCurrentMove(Row2, Column), unoccupiedPosition(Row2, Column), Row2 = Row + 1.
+% bottom-right
+closeToTheEmpty(Row, Column) :- pawnTurnedWithCurrentMove(Row, Column), not pawnTurnedWithCurrentMove(Row2, Column2), unoccupiedPosition(Row2, Column2), Row2 = Row + 1, Column2 = Column + 1.
+
+
+:~ frontierPawnOfComputerAfterCurrentMove(Row, Column). [1 : 3]

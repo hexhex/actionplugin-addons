@@ -1,0 +1,58 @@
+
+% color opponent's pawn
+opponentColor(b) :- myColor(w).
+opponentColor(w) :- myColor(b).
+
+% occupied positions
+occupiedPosition(Row, Column) :- pawnPlaced(Row, Column, _).
+
+% unoccupied positions
+unoccupiedPosition(Row, Column) :- not occupiedPosition(Row,Column), rowOrColumn(Row), rowOrColumn(Column).
+
+
+% If the selected location is on the same row, column or diagonal of another pawn of the computer and eat at least a pawn and if it doesn't already contains another pawn
+
+validPosition(Row, Column) :- unoccupiedPosition(Row,Column), pawnPlaced(Row, MyColumn, C), myColor(C), pawnPlaced(Row, OpponentColumn, Oc), opponentColor(Oc), Column < MyColumn, Column = OpponentColumn - 1, not holeForRowP(Row, Column, MyColumn).
+validPosition(Row, Column) :- unoccupiedPosition(Row,Column), pawnPlaced(Row, MyColumn, C), myColor(C), pawnPlaced(Row, OpponentColumn, Oc), opponentColor(Oc), Column > MyColumn, Column = OpponentColumn + 1, not holeForRowD(Row, Column, MyColumn).
+validPosition(Row, Column) :- unoccupiedPosition(Row,Column), pawnPlaced(MyRow, Column, C), myColor(C), pawnPlaced(OpponentRow, Column, Oc), opponentColor(Oc), Row < MyRow, Row = OpponentRow - 1, not holeForColumnP(Column, Row, MyRow).
+validPosition(Row, Column) :- unoccupiedPosition(Row,Column), pawnPlaced(MyRow, Column, C), myColor(C), pawnPlaced(OpponentRow, Column, Oc), opponentColor(Oc), Row > MyRow, Row = OpponentRow + 1, not holeForColumnD(Column, Row, MyRow).
+validPosition(Row, Column) :- unoccupiedPosition(Row,Column), pawnPlaced(Row2, Column2, C), myColor(C), onTheSameDiagonal(Row, Column, Row2, Column2).
+
+% second point on the upper left of the first point
+onTheSameDiagonal(Row1, Column1, Row2, Column2) :- pawnPlaced(Row2, Column2, C), myColor(C), Row1 = Row2 + K, Column1 = Column2 + K, rowOrColumn(K), rowOrColumn(Row1), rowOrColumn(Column1), pawnPlaced(OpponentRow, OpponentColumn, Oc), opponentColor(Oc), OpponentRow = Row1 - 1, OpponentColumn = Column1 - 1, not holeForDiagonalAS(Row1, Column1, Row2, Column2).
+% second point on the upper right of the first point
+onTheSameDiagonal(Row1, Column1, Row2, Column2) :- pawnPlaced(Row2, Column2, C), myColor(C), Row1 = Row2 + K, Column1 = Column2 - K, rowOrColumn(K), rowOrColumn(Row1), rowOrColumn(Column1), pawnPlaced(OpponentRow, OpponentColumn, Oc), opponentColor(Oc), OpponentRow = Row1 - 1, OpponentColumn = Column1 + 1, not holeForDiagonalAD(Row1, Column1, Row2, Column2).
+% Second point on the bottom left of the first point
+onTheSameDiagonal(Row1, Column1, Row2, Column2) :- pawnPlaced(Row2, Column2, C), myColor(C), Row1 = Row2 - K, Column1 = Column2 + K, rowOrColumn(K), rowOrColumn(Row1), rowOrColumn(Column1), pawnPlaced(OpponentRow, OpponentColumn, Oc), opponentColor(Oc), OpponentRow = Row1 + 1, OpponentColumn = Column1 - 1, not holeForDiagonalBS(Row1, Column1, Row2, Column2).
+% Second point on the bottom right of the first point
+onTheSameDiagonal(Row1, Column1, Row2, Column2) :- pawnPlaced(Row2, Column2, C), myColor(C), Row1 = Row2 - K, Column1 = Column2 - K, rowOrColumn(K), rowOrColumn(Row1), rowOrColumn(Column1), pawnPlaced(OpponentRow, OpponentColumn, Oc), opponentColor(Oc), OpponentRow = Row1 + 1, OpponentColumn = Column1 + 1, not holeForDiagonalBD(Row1, Column1, Row2, Column2).
+
+
+% check if there is a gap between the pieces, the first is the one where the pawn must be inserted and the second is a computer's pawn
+
+holeForRowP(Row, Column1, Column2) :- pawnPlaced(Row, Column2, C), myColor(C), unoccupiedPosition(Row,Column3), Column3 > Column1, Column3 < Column2, rowOrColumn(Column1).
+holeForRowD(Row, Column1, Column2) :- pawnPlaced(Row, Column2, C), myColor(C), unoccupiedPosition(Row,Column3), Column3 < Column1, Column3 > Column2, rowOrColumn(Column1).
+
+holeForColumnP(Column, Row1, Row2) :- pawnPlaced(Row2, Column, C), myColor(C), unoccupiedPosition(Row3,Column), Row3 > Row1, Row3 < Row2, rowOrColumn(Row1).
+holeForColumnD(Column, Row1, Row2) :- pawnPlaced(Row2, Column, C), myColor(C), unoccupiedPosition(Row3,Column), Row3 < Row1, Row3 > Row2, rowOrColumn(Row1).
+
+% second point on the upper left of the first point
+holeForDiagonalAS(Row1, Column1, Row2, Column2) :- pawnPlaced(Row2, Column2, C), myColor(C), unoccupiedPosition(Row3,Column3), Row1 = Row3 + K1, Column1 = Column3 + K1, Row2 = Row3 - K2, Column2 = Column3 - K2, rowOrColumn(K1), rowOrColumn(K2), rowOrColumn(Row1), rowOrColumn(Column1).
+% second point on the upper right of the first point
+holeForDiagonalAD(Row1, Column1, Row2, Column2) :- pawnPlaced(Row2, Column2, C), myColor(C), unoccupiedPosition(Row3,Column3), Row1 = Row3 + K1, Column1 = Column3 - K1, Row2 = Row3 - K2, Column2 = Column3 + K2, rowOrColumn(K1), rowOrColumn(K2), rowOrColumn(Row1), rowOrColumn(Column1).
+% Second point on the bottom left of the first point
+holeForDiagonalBS(Row1, Column1, Row2, Column2) :- pawnPlaced(Row2, Column2, C), myColor(C), unoccupiedPosition(Row3,Column3), Row1 = Row3 - K1, Column1 = Column3 + K1, Row2 = Row3 + K2, Column2 = Column3 - K2, rowOrColumn(K1), rowOrColumn(K2), rowOrColumn(Row1), rowOrColumn(Column1).
+% Second point on the bottom right of the first point
+holeForDiagonalBD(Row1, Column1, Row2, Column2) :- pawnPlaced(Row2, Column2, C), myColor(C), unoccupiedPosition(Row3,Column3), Row1 = Row3 - K1, Column1 = Column3 - K1, Row2 = Row3 + K2, Column2 = Column3 + K2, rowOrColumn(K1), rowOrColumn(K2), rowOrColumn(Row1), rowOrColumn(Column1).
+
+
+% Guess
+selectedPosition(Row, Column) v notSelectedPosition(Row, Column) :- validPosition(Row, Column).
+
+
+
+% Check: there must be a single ground atom of selectedPosition
+:- not #count{Row, Column : selectedPosition(Row, Column)} = 1.
+
+
+%#reversi[makeAMove, Row, Column]{b, 1} :- selectedPosition(Row, Column).

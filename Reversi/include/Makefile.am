@@ -1,0 +1,1 @@
+noinst_HEADERS = Reversi.h PawnPlaced.h

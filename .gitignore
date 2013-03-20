@@ -11,3 +11,6 @@ Makefile.in
 /depcomp
 /install-sh
 /missing
+
+# Stefano
+.directory

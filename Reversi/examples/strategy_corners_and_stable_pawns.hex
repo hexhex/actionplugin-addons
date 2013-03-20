@@ -1,0 +1,150 @@
+rowWithPawn(R) :- pawnPlaced(R, _, _).
+columnWithPawn(C) :- pawnPlaced(_, C, _).
+rowWithoutPawn(R) :- rowOrColumn(R), not rowWithPawn(R).
+columnWithoutPawn(C) :- rowOrColumn(C), not columnWithPawn(C).
+
+% counts how many opponents there are on row 1 and 8
+howManyOpponentsAreOnTheRow(HowMany, 1):- #count{C : pawnPlaced(1, C, Oc), opponentColor(Oc)} = HowMany, rowOrColumn(HowMany).
+howManyOpponentsAreOnTheRow(HowMany, 8):- #count{C : pawnPlaced(8, C, Oc), opponentColor(Oc)} = HowMany, rowOrColumn(HowMany).
+
+% counts how many opponents there are on column 1 and 8
+howManyOpponentsAreOnTheColumn(HowMany, 1):- #count{R : pawnPlaced(R, 1, Oc), opponentColor(Oc)} = HowMany, rowOrColumn(HowMany).
+howManyOpponentsAreOnTheColumn(HowMany, 8):- #count{R : pawnPlaced(R, 8, Oc), opponentColor(Oc)} = HowMany, rowOrColumn(HowMany).
+
+
+% if the selectedPosition is on the edge (it is on the first/last row/column)
+selectedPositionIsOnTheEdge :- selectedPosition(1, Column).
+selectedPositionIsOnTheEdge :- selectedPosition(8, Column).
+selectedPositionIsOnTheEdge :- selectedPosition(Row, 1).
+selectedPositionIsOnTheEdge :- selectedPosition(Row, 8).
+
+
+% if there is a corner that it can choose and it doesn't choose
+:~ notSelectedPosition(Row, Column), cornerPawn(Row, Column). [1 : 15]
+
+
+% if it chooses a position that also eats a pawn in position X or selects the X position and the corner has not yet been taken
+:~ selectedPosition(Row, Column), betweenOnTheSameRow(Row, Column, Column2, ColonnaR), pawnPlaced(Row, Column2, C), myColor(C), stablePawns(Row, ColonnaR, 16), cornerPawnOfThisX(Row, ColonnaR, RowA, ColumnA), unoccupiedPosition(RowA, ColumnA). [4 : 13]
+:~ selectedPosition(Row, Column), betweenOnTheSameColumn(Row, Row2, Column, RowR), pawnPlaced(Row2, Column, C), myColor(C), stablePawns(RowR, Column, 16), cornerPawnOfThisX(RowR, Column, RowA, ColumnA), unoccupiedPosition(RowA, ColumnA). [4 : 13]
+:~ selectedPosition(Row, Column), betweenOnTheSameDiagonal(Row, Column, Row2, Column2, RowR, ColonnaR), pawnPlaced(Row2, Column2, C), myColor(C), stablePawns(RowR, ColonnaR, 16), cornerPawnOfThisX(RowR, ColonnaR, RowA, ColumnA), unoccupiedPosition(RowA, ColumnA). [4 : 13]
+:~ selectedPosition(Row, Column), stablePawns(Row, Column, 16), cornerPawnOfThisX(Row, Column, RowA, ColumnA), unoccupiedPosition(RowA, ColumnA). [4 : 13]
+
+
+cornerPawnOfThisX(2, 2, 1, 1).
+cornerPawnOfThisX(2, 7, 1, 8).
+cornerPawnOfThisX(7, 2, 8, 1).
+cornerPawnOfThisX(7, 7, 8, 8).
+
+
+
+% if he can eat all on a row/column equal to 1/8 and it doesn't,
+% has higher priority than to put the first pawn on the edge because he has to eat otherwise it will be eaten
+% mangia_tutte_sul_bordo :- selectedPosition(1, Column), howManyOpponentsAreOnTheRow(HowManyOfTheOpponent, 1), howManyPawnsItEatsOnTheRow(HowManyEaten), HowManyEaten = HowManyOfTheOpponent.
+% mangia_tutte_sul_bordo :- selectedPosition(8, Column), howManyOpponentsAreOnTheRow(HowManyOfTheOpponent, 8), howManyPawnsItEatsOnTheRow(HowManyEaten),  HowManyEaten = HowManyOfTheOpponent.
+% mangia_tutte_sul_bordo :- selectedPosition(Row, 1), howManyOpponentsAreOnTheColumn(HowManyOfTheOpponent, 1), howManyPawnsItEatsOnTheColumn(HowManyEaten), HowManyEaten = HowManyOfTheOpponent.
+% mangia_tutte_sul_bordo :- selectedPosition(Row, 8), howManyOpponentsAreOnTheColumn(HowManyOfTheOpponent, 8), howManyPawnsItEatsOnTheColumn(HowManyEaten), HowManyEaten = HowManyOfTheOpponent.
+:~ selectedPosition(Row, Column), Row <> 1, Row <> 8, Column <> 1, Column <> 8. [1 : 12]
+:~ selectedPosition(1, Column), howManyOpponentsAreOnTheRow(HowManyOfTheOpponent, 1), howManyPawnsItEatsOnTheRow(HowManyEaten), HowManyEaten > 0, HowManyEaten <> HowManyOfTheOpponent. [2 : 12]
+:~ selectedPosition(8, Column), howManyOpponentsAreOnTheRow(HowManyOfTheOpponent, 8), howManyPawnsItEatsOnTheRow(HowManyEaten), HowManyEaten > 0, HowManyEaten <> HowManyOfTheOpponent. [2 : 12]
+:~ selectedPosition(Row, 1), howManyOpponentsAreOnTheColumn(HowManyOfTheOpponent, 1), howManyPawnsItEatsOnTheColumn(HowManyEaten), HowManyEaten > 0, HowManyEaten <> HowManyOfTheOpponent. [2 : 12]
+:~ selectedPosition(Row, 8), howManyOpponentsAreOnTheColumn(HowManyOfTheOpponent, 8), howManyPawnsItEatsOnTheColumn(HowManyEaten), HowManyEaten > 0, HowManyEaten <> HowManyOfTheOpponent. [2 : 12]
+:~ selectedPosition(1, Column), howManyOpponentsAreOnTheRow(HowManyOfTheOpponent, 1), howManyPawnsItEatsOnTheRow(HowManyEaten), HowManyEaten = 0, HowManyOfTheOpponent > 0. [2 : 12]
+:~ selectedPosition(8, Column), howManyOpponentsAreOnTheRow(HowManyOfTheOpponent, 8), howManyPawnsItEatsOnTheRow(HowManyEaten), HowManyEaten = 0, HowManyOfTheOpponent > 0. [2 : 12]
+:~ selectedPosition(Row, 1), howManyOpponentsAreOnTheColumn(HowManyOfTheOpponent, 1), howManyPawnsItEatsOnTheColumn(HowManyEaten), HowManyEaten = 0, HowManyOfTheOpponent > 0. [2 : 12]
+:~ selectedPosition(Row, 8), howManyOpponentsAreOnTheColumn(HowManyOfTheOpponent, 8), howManyPawnsItEatsOnTheColumn(HowManyEaten), HowManyEaten = 0, HowManyOfTheOpponent > 0. [2 : 12]
+:~ selectedPosition(Row, 1), howManyOpponentsAreOnTheColumn(0, 1). [1 : 12]
+:~ selectedPosition(Row, 8), howManyOpponentsAreOnTheColumn(0, 8). [1 : 12]
+:~ selectedPosition(1, Column), howManyOpponentsAreOnTheRow(0, 1). [1 : 12]
+:~ selectedPosition(8, Column), howManyOpponentsAreOnTheRow(0, 8). [1 : 12]
+
+
+% if it wants to put in an edge but leaves a hole
+:~ selectedPosition(Row, 1), Row2 = Row + 2, pawnPlaced(Row2, 1, C), myColor(C), Row1 = Row + 1, unoccupiedPosition(Row1, 1). [2 : 10]
+:~ selectedPosition(Row, 1), Row = Row2 + 2, pawnPlaced(Row2, 1, C), myColor(C), Row = Row1 + 1, unoccupiedPosition(Row1, 1). [2 : 10]
+:~ selectedPosition(Row, 8), Row2 = Row + 2, pawnPlaced(Row2, 8, C), myColor(C), Row1 = Row + 1, unoccupiedPosition(Row1, 8). [2 : 10]
+:~ selectedPosition(Row, 8), Row = Row2 + 2, pawnPlaced(Row2, 8, C), myColor(C), Row = Row1 + 1, unoccupiedPosition(Row1, 8). [2 : 10]
+:~ selectedPosition(1, Column), Column2 = Column + 2, pawnPlaced(1, Column2, C), myColor(C), Column1 = Column + 1, unoccupiedPosition(1, Column1). [2 : 10]
+:~ selectedPosition(1, Column), Column = Column2 + 2, pawnPlaced(1, Column2, C), myColor(C), Column = Column1 + 1, unoccupiedPosition(1, Column1). [2 : 10]
+:~ selectedPosition(8, Column), Column2 = Column + 2, pawnPlaced(8, Column2, C), myColor(C), Column1 = Column + 1, unoccupiedPosition(8, Column1). [2 : 10]
+:~ selectedPosition(8, Column), Column = Column2 + 2, pawnPlaced(8, Column2, C), myColor(C), Column = Column1 + 1, unoccupiedPosition(8, Column1). [2 : 10]
+
+
+% if he can put in an edge and there aren't pieces in the edge
+:~ notSelectedPosition(_, 1), columnWithoutPawn(1). [1 : 10]
+:~ notSelectedPosition(_, 8), columnWithoutPawn(8). [1 : 10]
+:~ notSelectedPosition(1, _), rowWithoutPawn(1). [1 : 10]
+:~ notSelectedPosition(8, _), rowWithoutPawn(8). [1 : 10]
+
+
+% if it can put in an edge and there aren't pieces in the edge next to him
+:~ notSelectedPosition(Row, 1), RowB = Row + 1, notPawnOfTheOpponent(RowB, 1), Row = RowA + 1, notPawnOfTheOpponent(RowA, 1). [1 : 6]
+:~ notSelectedPosition(Row, 8), RowB = Row + 1, notPawnOfTheOpponent(RowB, 8), Row = RowA + 1, notPawnOfTheOpponent(RowA, 8). [1 : 6]
+:~ notSelectedPosition(1, Column), ColumnD = Column + 1, notPawnOfTheOpponent(1, ColumnD), Column = ColumnS + 1, notPawnOfTheOpponent(1, ColumnS). [1 : 6]
+:~ notSelectedPosition(8, Column), ColumnD = Column + 1, notPawnOfTheOpponent(8, ColumnD), Column = ColumnS + 1, notPawnOfTheOpponent(8, ColumnS). [1 : 6]
+
+notPawnOfTheOpponent(Row, Column) :- unoccupiedPosition(Row, Column).
+notPawnOfTheOpponent(Row, Column) :- pawnPlaced(Row, Column, C), myColor(C).
+
+
+% if it can put in an edge and in that edge immediately to the left and immediately to its right there is the opponent
+:~ notSelectedPosition(Row, 1), RowB = Row + 1, pawnPlaced(RowB, 1, Oc), Row = RowA + 1, pawnPlaced(RowA, 1, Oc), opponentColor(Oc). [1 : 6]
+:~ notSelectedPosition(Row, 8), RowB = Row + 1, pawnPlaced(RowB, 8, Oc), Row = RowA + 1, pawnPlaced(RowA, 8, Oc), opponentColor(Oc). [1 : 6]
+:~ notSelectedPosition(1, Column), ColumnD = Column + 1, pawnPlaced(1, ColumnD, Oc), Column = ColumnS + 1, pawnPlaced(1, ColumnS, Oc), opponentColor(Oc). [1 : 6]
+:~ notSelectedPosition(8, Column), ColumnD = Column + 1, pawnPlaced(8, ColumnD, Oc), Column = ColumnS + 1, pawnPlaced(8, ColumnS, Oc), opponentColor(Oc). [1 : 6]
+
+
+% if it choose a "very bad" position
+:~ selectedPosition(Row, Column), stablePawns(Row, Column, Weight), Weight <> 16. [Weight : 4]
+
+
+% if there aren't pawns in an edge it should not put in the cells just before the edge
+% because otherwise it allows the opponent to put first a pawn on the edge
+:~ columnWithoutPawn(1), selectedPosition(_, 2). [1 : 4]
+:~ columnWithoutPawn(8), selectedPosition(_, 7). [1 : 4]
+:~ rowWithoutPawn(1), selectedPosition(2, _). [1 : 4]
+:~ rowWithoutPawn(8), selectedPosition(7, _). [1 : 4]
+
+
+
+% the stablePawns represent the position of a stable pawn and the Weight attached to its type = type : Weight    A: 2, B: 4, C: 8, X: 16
+%type A
+stablePawns(3,1,2).
+stablePawns(6,1,2).
+stablePawns(1,3,2).
+stablePawns(1,6,2).
+stablePawns(3,8,2).
+stablePawns(6,8,2).
+stablePawns(8,3,2).
+stablePawns(8,6,2).
+
+%type B
+stablePawns(4,1,4).
+stablePawns(5,1,4).
+stablePawns(1,4,4).
+stablePawns(1,5,4).
+stablePawns(4,8,4).
+stablePawns(5,8,4).
+stablePawns(8,4,4).
+stablePawns(8,5,4).
+
+%type C
+stablePawns(2,1,8).
+stablePawns(7,1,8).
+stablePawns(1,2,8).
+stablePawns(1,7,8).
+stablePawns(2,8,8).
+stablePawns(7,8,8).
+stablePawns(8,2,8).
+stablePawns(8,7,8).
+
+%type X
+stablePawns(2,2,16).
+stablePawns(2,7,16).
+stablePawns(7,2,16).
+stablePawns(7,7,16).
+
+% pawns in the corners
+cornerPawn(1,1).
+cornerPawn(1,8).
+cornerPawn(8,1).
+cornerPawn(8,8).

@@ -1,0 +1,61 @@
+% if there is a pawn not "edible" between two pawn (a computer or a blank cell)
+
+notEatablePawnForRowP(Row, Column1, Column2) :- holeForRowP(Row, Column1, Column2).
+notEatablePawnForRowP(Row, Column1, Column2) :- pawnPlaced(Row, Column2, C), myColor(C), pawnPlaced(Row, Column3, C), Column3 > Column1, Column3 < Column2, rowOrColumn(Column1).
+
+notEatablePawnForRowD(Row, Column1, Column2) :- holeForRowD(Row, Column1, Column2).
+notEatablePawnForRowD(Row, Column1, Column2) :- pawnPlaced(Row, Column2, C), myColor(C), pawnPlaced(Row, Column3, C), Column3 < Column1, Column3 > Column2, rowOrColumn(Column1).
+
+
+notEatablePawnForColumnP(Column, Row1, Row2) :- holeForColumnP(Column, Row1, Row2).
+notEatablePawnForColumnP(Column, Row1, Row2) :- pawnPlaced(Row2, Column, C), myColor(C), pawnPlaced(Row3, Column, C), Row3 > Row1, Row3 < Row2, rowOrColumn(Row1).
+
+notEatablePawnForColumnD(Column, Row1, Row2) :- holeForColumnD(Column, Row1, Row2).
+notEatablePawnForColumnD(Column, Row1, Row2) :- pawnPlaced(Row2, Column, C), myColor(C), pawnPlaced(Row3, Column, C), Row3 < Row1, Row3 > Row2, rowOrColumn(Row1).
+
+
+% second point on the upper left of the first point
+notEatablePawnForDiagonalAS(Row1, Column1, Row2, Column2) :- holeForDiagonalAS(Row1, Column1, Row2, Column2).
+notEatablePawnForDiagonalAS(Row1, Column1, Row2, Column2) :- pawnPlaced(Row2, Column2, C), myColor(C), pawnPlaced(Row3, Column3, C), Row1 = Row3 + K1, Column1 = Column3 + K1, Row2 = Row3 - K2, Column2 = Column3 - K2, rowOrColumn(K1), rowOrColumn(K2), rowOrColumn(Row1), rowOrColumn(Column1).
+% second point on the upper right of the first point
+notEatablePawnForDiagonalAD(Row1, Column1, Row2, Column2) :- holeForDiagonalAD(Row1, Column1, Row2, Column2).
+notEatablePawnForDiagonalAD(Row1, Column1, Row2, Column2) :- pawnPlaced(Row2, Column2, C), myColor(C), pawnPlaced(Row3, Column3, C), Row1 = Row3 + K1, Column1 = Column3 - K1, Row2 = Row3 - K2, Column2 = Column3 + K2, rowOrColumn(K1), rowOrColumn(K2), rowOrColumn(Row1), rowOrColumn(Column1).
+% Second point on the bottom left of the first point
+notEatablePawnForDiagonalBS(Row1, Column1, Row2, Column2) :- holeForDiagonalBS(Row1, Column1, Row2, Column2).
+notEatablePawnForDiagonalBS(Row1, Column1, Row2, Column2) :- pawnPlaced(Row2, Column2, C), myColor(C), pawnPlaced(Row3, Column3, C), Row1 = Row3 - K1, Column1 = Column3 + K1, Row2 = Row3 + K2, Column2 = Column3 - K2, rowOrColumn(K1), rowOrColumn(K2), rowOrColumn(Row1), rowOrColumn(Column1).
+% Second point on the bottom right of the first point
+notEatablePawnForDiagonalBD(Row1, Column1, Row2, Column2) :- holeForDiagonalBD(Row1, Column1, Row2, Column2).
+notEatablePawnForDiagonalBD(Row1, Column1, Row2, Column2) :- pawnPlaced(Row2, Column2, C), myColor(C), pawnPlaced(Row3, Column3, C), Row1 = Row3 - K1, Column1 = Column3 - K1, Row2 = Row3 + K2, Column2 = Column3 + K2, rowOrColumn(K1), rowOrColumn(K2), rowOrColumn(Row1), rowOrColumn(Column1).
+
+
+
+
+% in 1 there is the chosen position in 2 there is a pawn of the computer in Column there is the column of a pawn of the same Row, between 1 and 2
+betweenOnTheSameRow(Row, Column1, Column2, Column) :- pawnPlaced(Row, Column, Oc), opponentColor(Oc), selectedPosition(Row, Column1), pawnPlaced(Row, Column2, C), myColor(C), Column > Column1, Column < Column2, not notEatablePawnForRowP(Row, Column1, Column2).
+betweenOnTheSameRow(Row, Column1, Column2, Column) :- pawnPlaced(Row, Column, Oc), opponentColor(Oc), selectedPosition(Row, Column1), pawnPlaced(Row, Column2, C), myColor(C), Column < Column1, Column > Column2, not notEatablePawnForRowD(Row, Column1, Column2).
+
+% in 1 there is the chosen position in 2 there is a pawn of the computer in Row there is the column of a pawn of the same Column, between 1 and 2
+betweenOnTheSameColumn(Row1, Row2, Column, Row) :- pawnPlaced(Row, Column, Oc), opponentColor(Oc), selectedPosition(Row1, Column), pawnPlaced(Row2, Column, C), myColor(C), Row > Row1, Row < Row2, not notEatablePawnForColumnP(Column, Row1, Row2).
+betweenOnTheSameColumn(Row1, Row2, Column, Row) :- pawnPlaced(Row, Column, Oc), opponentColor(Oc), selectedPosition(Row1, Column), pawnPlaced(Row2, Column, C), myColor(C), Row < Row1, Row > Row2, not notEatablePawnForColumnD(Column, Row1, Row2).
+
+% second point on the upper left of the first point
+betweenOnTheSameDiagonal(Row1, Column1, Row2, Column2, Row, Column) :- pawnPlaced(Row, Column, Oc), opponentColor(Oc), selectedPosition(Row1, Column1), pawnPlaced(Row2, Column2, C), myColor(C), Row1 = Row + K1, Column1 = Column + K1, Row2 = Row - K2, Column2 = Column - K2, rowOrColumn(K1), rowOrColumn(K2), rowOrColumn(Row1), rowOrColumn(Column1), not notEatablePawnForDiagonalAS(Row1, Column1, Row2, Column2).
+% second point on the upper right of the first point
+betweenOnTheSameDiagonal(Row1, Column1, Row2, Column2, Row, Column) :- pawnPlaced(Row, Column, Oc), opponentColor(Oc), selectedPosition(Row1, Column1), pawnPlaced(Row2, Column2, C), myColor(C), Row1 = Row + K1, Column1 = Column - K1, Row2 = Row - K2, Column2 = Column + K2, rowOrColumn(K1), rowOrColumn(K2), rowOrColumn(Row1), rowOrColumn(Column1), not notEatablePawnForDiagonalAD(Row1, Column1, Row2, Column2).
+% Second point on the bottom left of the first point
+betweenOnTheSameDiagonal(Row1, Column1, Row2, Column2, Row, Column) :- pawnPlaced(Row, Column, Oc), opponentColor(Oc), selectedPosition(Row1, Column1), pawnPlaced(Row2, Column2, C), myColor(C), Row1 = Row - K1, Column1 = Column + K1, Row2 = Row + K2, Column2 = Column - K2, rowOrColumn(K1), rowOrColumn(K2), rowOrColumn(Row1), rowOrColumn(Column1), not notEatablePawnForDiagonalBS(Row1, Column1, Row2, Column2).
+% Second point on the bottom right of the first point
+betweenOnTheSameDiagonal(Row1, Column1, Row2, Column2, Row, Column) :- pawnPlaced(Row, Column, Oc), opponentColor(Oc), selectedPosition(Row1, Column1), pawnPlaced(Row2, Column2, C), myColor(C), Row1 = Row - K1, Column1 = Column - K1, Row2 = Row + K2, Column2 = Column + K2, rowOrColumn(K1), rowOrColumn(K2), rowOrColumn(Row1), rowOrColumn(Column1), not notEatablePawnForDiagonalBD(Row1, Column1, Row2, Column2).
+
+
+
+% count how many it eats, there should be only one instance for each rule
+possibleValue(0).possibleValue(1).possibleValue(2).possibleValue(3).possibleValue(4).possibleValue(5).possibleValue(6).possibleValue(7).possibleValue(8).possibleValue(9).possibleValue(10).possibleValue(11).possibleValue(12).possibleValue(13).possibleValue(14).possibleValue(15).possibleValue(16).possibleValue(17).possibleValue(18).possibleValue(19).possibleValue(20).possibleValue(21).possibleValue(22).possibleValue(23).possibleValue(24).possibleValue(25).possibleValue(26).possibleValue(27).possibleValue(28).possibleValue(29).possibleValue(30).possibleValue(31).possibleValue(32).possibleValue(33).possibleValue(34).possibleValue(35).possibleValue(36).possibleValue(37).possibleValue(38).possibleValue(39).possibleValue(40).possibleValue(41).possibleValue(42).possibleValue(43).possibleValue(44).possibleValue(45).possibleValue(46).possibleValue(47).possibleValue(48).possibleValue(49).possibleValue(50).possibleValue(51).possibleValue(52).possibleValue(53).possibleValue(54).possibleValue(55).possibleValue(56).possibleValue(57).possibleValue(58).possibleValue(59).possibleValue(60).possibleValue(61).possibleValue(62).possibleValue(63).possibleValue(64).
+howManyPawnsItEatsOnTheRow(HowMany) :- selectedPosition(Row, Column), #count{ ColonnaR : betweenOnTheSameRow(Row, Column, Column2, ColonnaR), pawnPlaced(Row, Column2, C), myColor(C) } = HowMany, possibleValue(HowMany).
+howManyPawnsItEatsOnTheColumn(HowMany) :- selectedPosition(Row, Column), #count{ RowR : betweenOnTheSameColumn(Row, Row2, Column, RowR), pawnPlaced(Row2, Column, C), myColor(C) } = HowMany, possibleValue(HowMany).
+howManyPawnsItEatsOnTheDiagonal(HowMany) :- selectedPosition(Row, Column), #count{ RowR, ColonnaR : betweenOnTheSameDiagonal(Row, Column, Row2, Column2, RowR, ColonnaR), pawnPlaced(Row2, Column2, C), myColor(C) } = HowMany, possibleValue(HowMany).
+
+howManyPawnsItEats(HowMany) :- howManyPawnsItEatsOnTheRow(howManyOnRow), howManyPawnsItEatsOnTheColumn(howManyOnColumn), howManyPawnsItEatsOnTheDiagonal(howManyOnDiagonal), howManyOnRowAndOnColumn = howManyOnRow + howManyOnColumn, HowMany = howManyOnRowAndOnColumn + howManyOnDiagonal, possibleValue(HowMany), possibleValue(howManyOnRowAndOnColumn).
+
+
+:~ howManyPawnsItEats(HowMany), 64 = Q + HowMany, possibleValue(Q). [Q : 2]

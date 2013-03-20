@@ -1,0 +1,19 @@
+% The facts are of this form:
+
+% number that can take a row or a column
+% rowOrColumn(1..8).
+
+% the pawns already placed in the matrix (w white pawn, b black pawn)
+% pawnPlaced(row, column, w | b).
+
+% color of the pawn of the player controlled by the logic
+% myColor(w | b).
+
+gamenumber(918719).
+
+rowOrColumn(1).rowOrColumn(2).rowOrColumn(3).rowOrColumn(4).rowOrColumn(5).rowOrColumn(6).rowOrColumn(7).rowOrColumn(8).
+
+pawnPlaced(Row, Column, Color) :- &pawnPlaced[GN](Row, Column, Color), gamenumber(GN).
+
+% myColor(Color) :- &myColor[GN](Color), gamenumber(GN).
+myColor(w).

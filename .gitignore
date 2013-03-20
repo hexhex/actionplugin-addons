@@ -14,3 +14,21 @@ Makefile.in
 
 # Stefano
 .directory
+.project
+COPYING
+INSTALL
+Makefile
+*.m4
+autom4te.cache
+configure
+depcomp
+config.*
+stamp-h1
+install-sh
+libtool
+ltmain.sh
+missing
+.deps
+.libs
+*.lo
+*.la

@@ -55,4 +55,4 @@ selectedPosition(Row, Column) v notSelectedPosition(Row, Column) :- validPositio
 :- not #count{Row, Column : selectedPosition(Row, Column)} = 1.
 
 
-%#reversi[makeAMove, Row, Column]{b, 1} :- selectedPosition(Row, Column).
+%#reversi[makeAMove, Row, Column]{b, 5} :- selectedPosition(Row, Column).

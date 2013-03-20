@@ -25,36 +25,76 @@ Reversi::Environment::~Environment() {
 	// Frees the memory allocated dynamically
 }
 
-void Reversi::Environment::getPawnPlaced(
-		list<PawnPlaced>& listPawnPlaced, unsigned int gamenumber) const {
+void Reversi::Environment::getPawnPlaced(list<PawnPlaced>& listPawnPlaced,
+		unsigned int gamenumber) const {
 
-
-
-}
-
-char Reversi::Environment::getMyColor(unsigned int gamenumber) const {
+	std::cout << "getPawnPlaced" << std::endl;
 
 	FILE *in;
-	char buff[2];
+	char buff[9];
 
-	if(!(in = popen("./pl/htmlReversiMyColorDecripter.pl" + gamenumber, "r")))
-		return 'e';
 
-	char color;
+	std::stringstream concatstream;
+	concatstream << "./pl/htmlReversiBoardDecripter.pl ";
+	concatstream << gamenumber;
 
-	while(fgets(buff, sizeof(buff), in)!=NULL)
-//		color << buff[0];
-		std::cout << buff << std::endl;
+	if (!(in = popen(concatstream.str().c_str(), "r")))
+		return;
+
+	int row = 1;
+
+	while (fgets(buff, sizeof(buff), in) != NULL) {
+
+		std::cout << "#" << buff << "#" << std::endl;
+
+		if(buff[0] != '\n') {
+
+		for(int column = 0; column < sizeof(buff); column++)
+			if(buff[column] == 'w' || buff[column] == 'b') {
+				listPawnPlaced.push_back(PawnPlaced(row, column + 1, buff[column]));
+				std::cout << row << ", " << column + 1 << ", " << buff[column] << std::endl;
+			}
+
+			std::cout << "row++" << std::endl;
+			row++;
+
+		}
+
+	}
 
 	pclose(in);
 
-//	int color = system("./pl/htmlReversiMyColorDecripter.pl");
+}
 
-	std::cout << "#" << color << "#" << std::endl;
+//char Reversi::Environment::getMyColor(unsigned int gamenumber) const {
+//
+//	FILE *in;
+//	char buff[2];
+//
+//	if(!(in = popen("./pl/htmlReversiMyColorDecripter.pl" + gamenumber, "r")))
+//		return 'e';
+//
+//	char color;
+//
+//	while(fgets(buff, sizeof(buff), in)!=NULL)
+////		color << buff[0];
+//		std::cout << buff << std::endl;
+//
+//	pclose(in);
+//
+////	int color = system("./pl/htmlReversiMyColorDecripter.pl");
+//
+//	std::cout << "#" << color << "#" << std::endl;
+//
+//}
+
+void Reversi::Environment::makeAMove(unsigned int row, unsigned int column) {
 
 }
 
-void Reversi::Environment::makeAMove(unsigned int row, unsigned int column) {
+void Reversi::Environment::setGamenumber(unsigned int gn) {
+
+	gamenumber = gn;
 
 }
 
@@ -75,12 +115,14 @@ void Reversi::PawnPlacedExternalAtom::retrieve(const Environment& environment,
 	ID idGameNumber = query.input[0];
 
 	if (!idGameNumber.isIntegerTerm())
-		throw PluginError("Wrong input argument type (isn't IntegerTerm in retrieve)");
+		throw PluginError(
+				"Wrong input argument type (isn't IntegerTerm in retrieve)");
 
 	int gameNumber = idGameNumber.address;
 
-	if(gameNumber < 0)
-		throw PluginError("Wrong input argument type (the input term isn't a positive integer)");
+	if (gameNumber < 0)
+		throw PluginError(
+				"Wrong input argument type (the input term isn't a positive integer)");
 
 	list<PawnPlaced> listPawnPlaced;
 	environment.getPawnPlaced(listPawnPlaced, gameNumber);
@@ -94,7 +136,10 @@ void Reversi::PawnPlacedExternalAtom::retrieve(const Environment& environment,
 		std::stringstream column;
 		column << it->getColumn();
 
-		std::string color = "" + it->getColor();
+		std::stringstream color;
+		color << it->getColor();
+
+		std::cout << row.str() << ", " << column.str() << ", " << color.str() << std::endl;
 
 		Tuple out;
 
@@ -106,7 +151,7 @@ void Reversi::PawnPlacedExternalAtom::retrieve(const Environment& environment,
 				std::string(column.str()));
 		out.push_back(registry.storeTerm(termColumn));
 
-		Term termColor(ID::MAINKIND_TERM | ID::SUBKIND_TERM_CONSTANT, color);
+		Term termColor(ID::MAINKIND_TERM | ID::SUBKIND_TERM_CONSTANT, color.str());
 		out.push_back(registry.storeTerm(termColor));
 
 		answer.get().push_back(out);
@@ -115,40 +160,43 @@ void Reversi::PawnPlacedExternalAtom::retrieve(const Environment& environment,
 
 }
 
-Reversi::MyColorExternalAtom::MyColorExternalAtom() :
-		PluginActionAtom("myColor") {
-	addInputConstant();
-	setOutputArity(1);
-}
-
-void Reversi::MyColorExternalAtom::retrieve(const Environment& environment,
-		const Query& query, Answer& answer) {
-
-	Registry &registry = *getRegistry();
-
-	if (query.input.size() != 1)
-		throw PluginError("Wrong input argument type (arity in retrieve)");
-
-	ID idGameNumber = query.input[0];
-
-	if (!idGameNumber.isIntegerTerm())
-		throw PluginError("Wrong input argument type (isn't IntegerTerm in retrieve)");
-
-	int gameNumber = idGameNumber.address;
-
-	if(gameNumber < 0)
-		throw PluginError("Wrong input argument type (the input term isn't a positive integer)");
-
-	std::string color = "" + environment.getMyColor(gameNumber);
-
-	Tuple out;
-
-	Term termColor(ID::MAINKIND_TERM | ID::SUBKIND_TERM_CONSTANT, color);
-	out.push_back(registry.storeTerm(termColor));
-
-	answer.get().push_back(out);
-
-}
+//Reversi::MyColorExternalAtom::MyColorExternalAtom() :
+//		PluginActionAtom("myColor") {
+//	addInputConstant();
+//	setOutputArity(1);
+//}
+//
+//void Reversi::MyColorExternalAtom::retrieve(const Environment& environment,
+//		const Query& query, Answer& answer) {
+//
+//	Registry &registry = *getRegistry();
+//
+//	if (query.input.size() != 1)
+//		throw PluginError("Wrong input argument type (arity in retrieve)");
+//
+//	ID idGameNumber = query.input[0];
+//
+//	if (!idGameNumber.isIntegerTerm())
+//		throw PluginError(
+//				"Wrong input argument type (isn't IntegerTerm in retrieve)");
+//
+//	int gameNumber = idGameNumber.address;
+//
+//	if (gameNumber < 0)
+//		throw PluginError(
+//				"Wrong input argument type (the input term isn't a positive integer)");
+//
+//	std::stringstream color;
+//	color << environment.getMyColor(gameNumber);
+//
+//	Tuple out;
+//
+//	Term termColor(ID::MAINKIND_TERM | ID::SUBKIND_TERM_CONSTANT, color.str());
+//	out.push_back(registry.storeTerm(termColor));
+//
+//	answer.get().push_back(out);
+//
+//}
 
 Reversi::ReversiActionAtom::ReversiActionAtom() :
 		PluginAction("reversi") {
@@ -159,7 +207,9 @@ void Reversi::ReversiActionAtom::execute(Environment& environment,
 		const InterpretationConstPtr interpretationPtr) {
 	Registry& registry = *pregistry;
 
-	if (registry.getTermStringByID(parms[0]) == "makeAMove")
+	if (registry.getTermStringByID(parms[0]) == "setGamenumber")
+		environment.setGamenumber(parms[1].address);
+	else if (registry.getTermStringByID(parms[0]) == "makeAMove")
 		environment.makeAMove(parms[1].address, parms[2].address);
 
 }
@@ -170,9 +220,9 @@ std::vector<PluginAtomPtr> Reversi::createAtoms(ProgramCtx& ctx) const {
 	ret.push_back(
 			PluginAtomPtr(new PawnPlacedExternalAtom,
 					PluginPtrDeleter<PluginAtom>()));
-	ret.push_back(
-			PluginAtomPtr(new MyColorExternalAtom,
-					PluginPtrDeleter<PluginAtom>()));
+//	ret.push_back(
+//			PluginAtomPtr(new MyColorExternalAtom,
+//					PluginPtrDeleter<PluginAtom>()));
 	return ret;
 
 }

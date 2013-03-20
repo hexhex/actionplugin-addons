@@ -32,8 +32,11 @@ public:
 		Environment();
 		virtual ~Environment();
 		void getPawnPlaced(list<PawnPlaced>&, unsigned int) const;
-		char getMyColor(unsigned int) const;
+//		char getMyColor(unsigned int) const;
 		void makeAMove(unsigned int, unsigned int);
+		void setGamenumber(unsigned int);
+	private:
+		unsigned int gamenumber;
 	};
 
 	/**
@@ -50,13 +53,13 @@ public:
 	/**
 	 * @brief
 	 */
-	class MyColorExternalAtom: public PluginActionAtom<Reversi> {
-	public:
-		MyColorExternalAtom();
-	private:
-		virtual void retrieve(const Environment& environment,
-				const Query& query, Answer& answer);
-	};
+//	class MyColorExternalAtom: public PluginActionAtom<Reversi> {
+//	public:
+//		MyColorExternalAtom();
+//	private:
+//		virtual void retrieve(const Environment& environment,
+//				const Query& query, Answer& answer);
+//	};
 
 	/**
 	 * @brief

@@ -1,3 +1,4 @@
+
 % if there is a pawn not "edible" between two pawn (a computer or a blank cell)
 
 notEatablePawnForRowP(Row, Column1, Column2) :- holeForRowP(Row, Column1, Column2).
@@ -55,7 +56,7 @@ howManyPawnsItEatsOnTheRow(HowMany) :- selectedPosition(Row, Column), #count{ Co
 howManyPawnsItEatsOnTheColumn(HowMany) :- selectedPosition(Row, Column), #count{ RowR : betweenOnTheSameColumn(Row, Row2, Column, RowR), pawnPlaced(Row2, Column, C), myColor(C) } = HowMany, possibleValue(HowMany).
 howManyPawnsItEatsOnTheDiagonal(HowMany) :- selectedPosition(Row, Column), #count{ RowR, ColonnaR : betweenOnTheSameDiagonal(Row, Column, Row2, Column2, RowR, ColonnaR), pawnPlaced(Row2, Column2, C), myColor(C) } = HowMany, possibleValue(HowMany).
 
-howManyPawnsItEats(HowMany) :- howManyPawnsItEatsOnTheRow(howManyOnRow), howManyPawnsItEatsOnTheColumn(howManyOnColumn), howManyPawnsItEatsOnTheDiagonal(howManyOnDiagonal), howManyOnRowAndOnColumn = howManyOnRow + howManyOnColumn, HowMany = howManyOnRowAndOnColumn + howManyOnDiagonal, possibleValue(HowMany), possibleValue(howManyOnRowAndOnColumn).
+howManyPawnsItEats(HowMany) :- howManyPawnsItEatsOnTheRow(HowManyOnRow), howManyPawnsItEatsOnTheColumn(HowManyOnColumn), howManyPawnsItEatsOnTheDiagonal(HowManyOnDiagonal), HowManyOnRowAndOnColumn = HowManyOnRow + HowManyOnColumn, HowMany = HowManyOnRowAndOnColumn + HowManyOnDiagonal, possibleValue(HowMany), possibleValue(HowManyOnRowAndOnColumn).
 
 
 :~ howManyPawnsItEats(HowMany), 64 = Q + HowMany, possibleValue(Q). [Q : 2]

@@ -1,3 +1,4 @@
+
 % if in (Row, Column) there is a frontier pawn of the computer
 % frontierPawnOfComputer(Row, Column) :- pawnPlaced(Row, Column, C), myColor(C), closeToTheEmpty(Row, Column).
 

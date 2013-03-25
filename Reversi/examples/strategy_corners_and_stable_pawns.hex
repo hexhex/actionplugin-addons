@@ -1,3 +1,4 @@
+
 rowWithPawn(R) :- pawnPlaced(R, _, _).
 columnWithPawn(C) :- pawnPlaced(_, C, _).
 rowWithoutPawn(R) :- rowOrColumn(R), not rowWithPawn(R).

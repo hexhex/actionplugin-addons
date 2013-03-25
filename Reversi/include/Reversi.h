@@ -35,8 +35,12 @@ public:
 //		char getMyColor(unsigned int) const;
 		void makeAMove(unsigned int, unsigned int);
 		void setGamenumber(unsigned int);
+		void setUsername(const std::string&);
+		void setPassword(const std::string&);
 	private:
 		unsigned int gamenumber;
+		std::string username;
+		std::string password;
 	};
 
 	/**
@@ -60,7 +64,6 @@ public:
 //		virtual void retrieve(const Environment& environment,
 //				const Query& query, Answer& answer);
 //	};
-
 	/**
 	 * @brief
 	 */
@@ -81,7 +84,7 @@ protected:
 
 	ActionPluginInterfacePtr create(ProgramCtx& ctx) {
 		ctx.getPluginEnvironment<Reversi>();
-		return boost::shared_ptr <Reversi> (new Reversi());
+		return boost::shared_ptr < Reversi > (new Reversi());
 	}
 
 };

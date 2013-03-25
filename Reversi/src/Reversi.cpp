@@ -33,7 +33,6 @@ void Reversi::Environment::getPawnPlaced(list<PawnPlaced>& listPawnPlaced,
 	FILE *in;
 	char buff[9];
 
-
 	std::stringstream concatstream;
 	concatstream << "./pl/htmlReversiBoardDecripter.pl ";
 	concatstream << gamenumber;
@@ -45,17 +44,19 @@ void Reversi::Environment::getPawnPlaced(list<PawnPlaced>& listPawnPlaced,
 
 	while (fgets(buff, sizeof(buff), in) != NULL) {
 
-		std::cout << "#" << buff << "#" << std::endl;
+//		std::cout << "#" << buff << "#" << std::endl;
 
-		if(buff[0] != '\n') {
+		if (buff[0] != '\n') {
 
-		for(int column = 0; column < sizeof(buff); column++)
-			if(buff[column] == 'w' || buff[column] == 'b') {
-				listPawnPlaced.push_back(PawnPlaced(row, column + 1, buff[column]));
-				std::cout << row << ", " << column + 1 << ", " << buff[column] << std::endl;
-			}
+			for (int column = 0; column < sizeof(buff); column++)
+				if (buff[column] == 'w' || buff[column] == 'b') {
+					listPawnPlaced.push_back(
+							PawnPlaced(row, column + 1, buff[column]));
+					std::cout << row << ", " << column + 1 << ", "
+							<< buff[column] << std::endl;
+				}
 
-			std::cout << "row++" << std::endl;
+//			std::cout << "row++" << std::endl;
 			row++;
 
 		}
@@ -90,12 +91,39 @@ void Reversi::Environment::getPawnPlaced(list<PawnPlaced>& listPawnPlaced,
 
 void Reversi::Environment::makeAMove(unsigned int row, unsigned int column) {
 
+	std::cout << "makeAMove, selected position: <" << row << ", " << column << ">" << std::endl;
+
+	std::stringstream commandss;
+	commandss << "casperjs js/makeMove.js ";
+	commandss << username;
+	commandss << " ";
+	commandss << password;
+	commandss << " ";
+	commandss << gamenumber;
+	commandss << " ";
+	commandss << row;
+	commandss << " ";
+	commandss << column;
+
+	std::cout << commandss.str() << std::endl;
+
+	system(commandss.str().c_str());
+
 }
 
-void Reversi::Environment::setGamenumber(unsigned int gn) {
-
+void Reversi::Environment::setGamenumber(const unsigned int gn) {
+	std::cout << "setGamenumber " << gn << std::endl;
 	gamenumber = gn;
+}
 
+void Reversi::Environment::setUsername(const std::string& un) {
+	std::cout << "setUsername " << un << std::endl;
+	username = un;
+}
+
+void Reversi::Environment::setPassword(const std::string& pw) {
+	std::cout << "setPassword " << pw << std::endl;
+	password = pw;
 }
 
 Reversi::PawnPlacedExternalAtom::PawnPlacedExternalAtom() :
@@ -139,7 +167,8 @@ void Reversi::PawnPlacedExternalAtom::retrieve(const Environment& environment,
 		std::stringstream color;
 		color << it->getColor();
 
-		std::cout << row.str() << ", " << column.str() << ", " << color.str() << std::endl;
+		std::cout << row.str() << ", " << column.str() << ", " << color.str()
+				<< std::endl;
 
 		Tuple out;
 
@@ -151,7 +180,8 @@ void Reversi::PawnPlacedExternalAtom::retrieve(const Environment& environment,
 				std::string(column.str()));
 		out.push_back(registry.storeTerm(termColumn));
 
-		Term termColor(ID::MAINKIND_TERM | ID::SUBKIND_TERM_CONSTANT, color.str());
+		Term termColor(ID::MAINKIND_TERM | ID::SUBKIND_TERM_CONSTANT,
+				color.str());
 		out.push_back(registry.storeTerm(termColor));
 
 		answer.get().push_back(out);
@@ -209,6 +239,10 @@ void Reversi::ReversiActionAtom::execute(Environment& environment,
 
 	if (registry.getTermStringByID(parms[0]) == "setGamenumber")
 		environment.setGamenumber(parms[1].address);
+	else if (registry.getTermStringByID(parms[0]) == "setUsername")
+		environment.setUsername(registry.getTermStringByID(parms[1]));
+	else if (registry.getTermStringByID(parms[0]) == "setPassword")
+		environment.setPassword(registry.getTermStringByID(parms[1]));
 	else if (registry.getTermStringByID(parms[0]) == "makeAMove")
 		environment.makeAMove(parms[1].address, parms[2].address);
 

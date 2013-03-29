@@ -15,4 +15,12 @@ pawnPlaced(Row, Column, Color) :- &pawnPlaced[GN](Row, Column, Color), gamenumbe
 
 % myColor(Color) :- &myColor[GN](Color), gamenumber(GN).
 
-#reversi[setGamenumber, GN, 1]{b, 1} :- &iteration[](1), gamenumber(GN).
+#reversi[setGamenumber, GN, 1]{b, 1} :- iteration(1), gamenumber(GN).
+
+iteration(I) :- &iteration[](I).
+
+#reversi[wait, 1, 1]{b, 20}.
+
+gameFinished :- &gameFinished[GN](), gamenumber(GN).
+
+#acthexContinue{b} :- not gameFinished.

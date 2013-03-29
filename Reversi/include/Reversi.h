@@ -37,6 +37,8 @@ public:
 		void setGamenumber(unsigned int);
 		void setUsername(const std::string&);
 		void setPassword(const std::string&);
+		void wait() const;
+		bool gameFinished(unsigned int) const;
 	private:
 		unsigned int gamenumber;
 		std::string username;
@@ -64,6 +66,18 @@ public:
 //		virtual void retrieve(const Environment& environment,
 //				const Query& query, Answer& answer);
 //	};
+
+	/**
+	 * @brief
+	 */
+	class GameFinishedExternalAtom: public PluginActionAtom<Reversi> {
+	public:
+		GameFinishedExternalAtom();
+	private:
+		virtual void retrieve(const Environment& environment,
+				const Query& query, Answer& answer);
+	};
+
 	/**
 	 * @brief
 	 */

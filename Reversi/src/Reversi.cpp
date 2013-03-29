@@ -91,7 +91,8 @@ void Reversi::Environment::getPawnPlaced(list<PawnPlaced>& listPawnPlaced,
 
 void Reversi::Environment::makeAMove(unsigned int row, unsigned int column) {
 
-	std::cout << "makeAMove, selected position: <" << row << ", " << column << ">" << std::endl;
+	std::cout << "makeAMove, selected position: <" << row << ", " << column
+			<< ">" << std::endl;
 
 	std::stringstream commandss;
 	commandss << "casperjs js/makeMove.js ";
@@ -124,6 +125,25 @@ void Reversi::Environment::setUsername(const std::string& un) {
 void Reversi::Environment::setPassword(const std::string& pw) {
 	std::cout << "setPassword " << pw << std::endl;
 	password = pw;
+}
+
+void Reversi::Environment::wait() const {
+	std::cout << "start wait" << std::endl;
+	// from 30 to 60
+	int sleepTime = rand() % 30 + 30;
+	sleep(sleepTime);
+	std::cout << "end wait" << std::endl;
+}
+
+bool Reversi::Environment::gameFinished(unsigned int gamenumber) const {
+
+	int exit_status = system("./pl/htmlReversiGameFinished.pl " + gamenumber);
+
+	if(exit_status == 1)
+		return true;
+
+	return false;
+
 }
 
 Reversi::PawnPlacedExternalAtom::PawnPlacedExternalAtom() :
@@ -228,6 +248,39 @@ void Reversi::PawnPlacedExternalAtom::retrieve(const Environment& environment,
 //
 //}
 
+Reversi::GameFinishedExternalAtom::GameFinishedExternalAtom() :
+		PluginActionAtom("gameFinished") {
+	addInputConstant();
+	setOutputArity(0);
+}
+
+void Reversi::GameFinishedExternalAtom::retrieve(const Environment& environment,
+		const Query& query, Answer& answer) {
+
+	Registry &registry = *getRegistry();
+
+	if (query.input.size() != 1)
+		throw PluginError("Wrong input argument type (arity in retrieve)");
+
+	ID idGameNumber = query.input[0];
+
+	if (!idGameNumber.isIntegerTerm())
+		throw PluginError(
+				"Wrong input argument type (isn't IntegerTerm in retrieve)");
+
+	int gameNumber = idGameNumber.address;
+
+	if (gameNumber < 0)
+		throw PluginError(
+				"Wrong input argument type (the input term isn't a positive integer)");
+
+	Tuple out;
+
+	if (environment.gameFinished(gameNumber))
+		answer.get().push_back(out);
+
+}
+
 Reversi::ReversiActionAtom::ReversiActionAtom() :
 		PluginAction("reversi") {
 }
@@ -245,6 +298,8 @@ void Reversi::ReversiActionAtom::execute(Environment& environment,
 		environment.setPassword(registry.getTermStringByID(parms[1]));
 	else if (registry.getTermStringByID(parms[0]) == "makeAMove")
 		environment.makeAMove(parms[1].address, parms[2].address);
+	else if (registry.getTermStringByID(parms[0]) == "wait")
+		environment.wait();
 
 }
 
@@ -257,6 +312,9 @@ std::vector<PluginAtomPtr> Reversi::createAtoms(ProgramCtx& ctx) const {
 //	ret.push_back(
 //			PluginAtomPtr(new MyColorExternalAtom,
 //					PluginPtrDeleter<PluginAtom>()));
+	ret.push_back(
+			PluginAtomPtr(new GameFinishedExternalAtom,
+					PluginPtrDeleter<PluginAtom>()));
 	return ret;
 
 }

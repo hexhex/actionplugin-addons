@@ -128,18 +128,46 @@ void Reversi::Environment::setPassword(const std::string& pw) {
 }
 
 void Reversi::Environment::wait() const {
+
 	std::cout << "start wait" << std::endl;
-	// from 30 to 60
-	int sleepTime = rand() % 30 + 30;
-	sleep(sleepTime);
+
+	int exit_status;
+
+	do {
+
+		// from 30 to 60 seconds
+		int sleepTime = rand() % 30 + 30;
+		std::cout << "sleepTime " << sleepTime << std::endl;
+
+		sleep(sleepTime);
+
+		std::stringstream commandss;
+		commandss << "casperjs js/isMyTurn.js ";
+		commandss << username;
+		commandss << " ";
+		commandss << password;
+		commandss << " ";
+		commandss << gamenumber;
+
+		exit_status = system(commandss.str().c_str());
+
+		std::cout << "exit_status " << exit_status << std::endl;
+
+	} while (exit_status != 0);
+
 	std::cout << "end wait" << std::endl;
+
 }
 
 bool Reversi::Environment::gameFinished(unsigned int gamenumber) const {
 
-	int exit_status = system("./pl/htmlReversiGameFinished.pl " + gamenumber);
+	std::stringstream commandss;
+	commandss << "./pl/htmlReversiGameFinished.pl ";
+	commandss << gamenumber;
 
-	if(exit_status == 1)
+	int exit_status = system(commandss.str().c_str());
+
+	if (exit_status != 0)
 		return true;
 
 	return false;

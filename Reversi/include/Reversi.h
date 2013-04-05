@@ -37,12 +37,13 @@ public:
 		void setGamenumber(unsigned int);
 		void setUsername(const std::string&);
 		void setPassword(const std::string&);
-		void wait() const;
+		void wait();
 		bool gameFinished(unsigned int) const;
 	private:
 		unsigned int gamenumber;
 		std::string username;
 		std::string password;
+		unsigned int waitTime;
 	};
 
 	/**
@@ -66,7 +67,6 @@ public:
 //		virtual void retrieve(const Environment& environment,
 //				const Query& query, Answer& answer);
 //	};
-
 	/**
 	 * @brief
 	 */

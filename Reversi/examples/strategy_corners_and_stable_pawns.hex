@@ -21,14 +21,14 @@ selectedPositionIsOnTheEdge :- selectedPosition(Row, 8).
 
 
 % if there is a corner that it can choose and it doesn't choose
-#reversi[weigthANDlevel, 1, 1]{b, 10}[1 : 15] :- notSelectedPosition(Row, Column), cornerPawn(Row, Column).
+#reversi[weigthANDlevel, 1, 1]{b, 10}[1 : 15] :- notSelectedPosition(Row, Column), cornerPawn(Row, Column), not gameFinished.
 
 
 % if it chooses a position that also eats a pawn in position X or selects the X position and the corner has not yet been taken
-#reversi[weigthANDlevel, 1, 1]{b, 10}[4 : 13] :- selectedPosition(Row, Column), betweenOnTheSameRow(Row, Column, Column2, ColonnaR), pawnPlaced(Row, Column2, C), myColor(C), stablePawns(Row, ColonnaR, 16), cornerPawnOfThisX(Row, ColonnaR, RowA, ColumnA), unoccupiedPosition(RowA, ColumnA).
-#reversi[weigthANDlevel, 1, 1]{b, 10}[4 : 13] :- selectedPosition(Row, Column), betweenOnTheSameColumn(Row, Row2, Column, RowR), pawnPlaced(Row2, Column, C), myColor(C), stablePawns(RowR, Column, 16), cornerPawnOfThisX(RowR, Column, RowA, ColumnA), unoccupiedPosition(RowA, ColumnA).
-#reversi[weigthANDlevel, 1, 1]{b, 10}[4 : 13] :- selectedPosition(Row, Column), betweenOnTheSameDiagonal(Row, Column, Row2, Column2, RowR, ColonnaR), pawnPlaced(Row2, Column2, C), myColor(C), stablePawns(RowR, ColonnaR, 16), cornerPawnOfThisX(RowR, ColonnaR, RowA, ColumnA), unoccupiedPosition(RowA, ColumnA).
-#reversi[weigthANDlevel, 1, 1]{b, 10}[4 : 13] :- selectedPosition(Row, Column), stablePawns(Row, Column, 16), cornerPawnOfThisX(Row, Column, RowA, ColumnA), unoccupiedPosition(RowA, ColumnA).
+#reversi[weigthANDlevel, 1, 1]{b, 10}[4 : 13] :- selectedPosition(Row, Column), betweenOnTheSameRow(Row, Column, Column2, ColonnaR), pawnPlaced(Row, Column2, C), myColor(C), stablePawns(Row, ColonnaR, 16), cornerPawnOfThisX(Row, ColonnaR, RowA, ColumnA), unoccupiedPosition(RowA, ColumnA), not gameFinished.
+#reversi[weigthANDlevel, 1, 1]{b, 10}[4 : 13] :- selectedPosition(Row, Column), betweenOnTheSameColumn(Row, Row2, Column, RowR), pawnPlaced(Row2, Column, C), myColor(C), stablePawns(RowR, Column, 16), cornerPawnOfThisX(RowR, Column, RowA, ColumnA), unoccupiedPosition(RowA, ColumnA), not gameFinished.
+#reversi[weigthANDlevel, 1, 1]{b, 10}[4 : 13] :- selectedPosition(Row, Column), betweenOnTheSameDiagonal(Row, Column, Row2, Column2, RowR, ColonnaR), pawnPlaced(Row2, Column2, C), myColor(C), stablePawns(RowR, ColonnaR, 16), cornerPawnOfThisX(RowR, ColonnaR, RowA, ColumnA), unoccupiedPosition(RowA, ColumnA), not gameFinished.
+#reversi[weigthANDlevel, 1, 1]{b, 10}[4 : 13] :- selectedPosition(Row, Column), stablePawns(Row, Column, 16), cornerPawnOfThisX(Row, Column, RowA, ColumnA), unoccupiedPosition(RowA, ColumnA), not gameFinished.
 
 
 cornerPawnOfThisX(2, 2, 1, 1).
@@ -44,66 +44,66 @@ cornerPawnOfThisX(7, 7, 8, 8).
 % mangia_tutte_sul_bordo :- selectedPosition(8, Column), howManyOpponentsAreOnTheRow(HowManyOfTheOpponent, 8), howManyPawnsItEatsOnTheRow(HowManyEaten),  HowManyEaten = HowManyOfTheOpponent.
 % mangia_tutte_sul_bordo :- selectedPosition(Row, 1), howManyOpponentsAreOnTheColumn(HowManyOfTheOpponent, 1), howManyPawnsItEatsOnTheColumn(HowManyEaten), HowManyEaten = HowManyOfTheOpponent.
 % mangia_tutte_sul_bordo :- selectedPosition(Row, 8), howManyOpponentsAreOnTheColumn(HowManyOfTheOpponent, 8), howManyPawnsItEatsOnTheColumn(HowManyEaten), HowManyEaten = HowManyOfTheOpponent.
-#reversi[weigthANDlevel, 1, 1]{b, 10}[1 : 12] :- selectedPosition(Row, Column), Row <> 1, Row <> 8, Column <> 1, Column <> 8.
-#reversi[weigthANDlevel, 1, 1]{b, 10}[2 : 12] :- selectedPosition(1, Column), howManyOpponentsAreOnTheRow(HowManyOfTheOpponent, 1), howManyPawnsItEatsOnTheRow(HowManyEaten), HowManyEaten > 0, HowManyEaten <> HowManyOfTheOpponent.
-#reversi[weigthANDlevel, 1, 1]{b, 10}[2 : 12] :- selectedPosition(8, Column), howManyOpponentsAreOnTheRow(HowManyOfTheOpponent, 8), howManyPawnsItEatsOnTheRow(HowManyEaten), HowManyEaten > 0, HowManyEaten <> HowManyOfTheOpponent.
-#reversi[weigthANDlevel, 1, 1]{b, 10}[2 : 12] :- selectedPosition(Row, 1), howManyOpponentsAreOnTheColumn(HowManyOfTheOpponent, 1), howManyPawnsItEatsOnTheColumn(HowManyEaten), HowManyEaten > 0, HowManyEaten <> HowManyOfTheOpponent.
-#reversi[weigthANDlevel, 1, 1]{b, 10}[2 : 12] :- selectedPosition(Row, 8), howManyOpponentsAreOnTheColumn(HowManyOfTheOpponent, 8), howManyPawnsItEatsOnTheColumn(HowManyEaten), HowManyEaten > 0, HowManyEaten <> HowManyOfTheOpponent.
-#reversi[weigthANDlevel, 1, 1]{b, 10}[2 : 12] :- selectedPosition(1, Column), howManyOpponentsAreOnTheRow(HowManyOfTheOpponent, 1), howManyPawnsItEatsOnTheRow(HowManyEaten), HowManyEaten = 0, HowManyOfTheOpponent > 0.
-#reversi[weigthANDlevel, 1, 1]{b, 10}[2 : 12] :- selectedPosition(8, Column), howManyOpponentsAreOnTheRow(HowManyOfTheOpponent, 8), howManyPawnsItEatsOnTheRow(HowManyEaten), HowManyEaten = 0, HowManyOfTheOpponent > 0.
-#reversi[weigthANDlevel, 1, 1]{b, 10}[2 : 12] :- selectedPosition(Row, 1), howManyOpponentsAreOnTheColumn(HowManyOfTheOpponent, 1), howManyPawnsItEatsOnTheColumn(HowManyEaten), HowManyEaten = 0, HowManyOfTheOpponent > 0.
-#reversi[weigthANDlevel, 1, 1]{b, 10}[2 : 12] :- selectedPosition(Row, 8), howManyOpponentsAreOnTheColumn(HowManyOfTheOpponent, 8), howManyPawnsItEatsOnTheColumn(HowManyEaten), HowManyEaten = 0, HowManyOfTheOpponent > 0.
-#reversi[weigthANDlevel, 1, 1]{b, 10}[1 : 12] :- selectedPosition(Row, 1), howManyOpponentsAreOnTheColumn(0, 1).
-#reversi[weigthANDlevel, 1, 1]{b, 10}[1 : 12] :- selectedPosition(Row, 8), howManyOpponentsAreOnTheColumn(0, 8).
-#reversi[weigthANDlevel, 1, 1]{b, 10}[1 : 12] :- selectedPosition(1, Column), howManyOpponentsAreOnTheRow(0, 1).
-#reversi[weigthANDlevel, 1, 1]{b, 10}[1 : 12] :- selectedPosition(8, Column), howManyOpponentsAreOnTheRow(0, 8).
+#reversi[weigthANDlevel, 1, 1]{b, 10}[1 : 12] :- selectedPosition(Row, Column), Row <> 1, Row <> 8, Column <> 1, Column <> 8, not gameFinished.
+#reversi[weigthANDlevel, 1, 1]{b, 10}[2 : 12] :- selectedPosition(1, Column), howManyOpponentsAreOnTheRow(HowManyOfTheOpponent, 1), howManyPawnsItEatsOnTheRow(HowManyEaten), HowManyEaten > 0, HowManyEaten <> HowManyOfTheOpponent, not gameFinished.
+#reversi[weigthANDlevel, 1, 1]{b, 10}[2 : 12] :- selectedPosition(8, Column), howManyOpponentsAreOnTheRow(HowManyOfTheOpponent, 8), howManyPawnsItEatsOnTheRow(HowManyEaten), HowManyEaten > 0, HowManyEaten <> HowManyOfTheOpponent, not gameFinished.
+#reversi[weigthANDlevel, 1, 1]{b, 10}[2 : 12] :- selectedPosition(Row, 1), howManyOpponentsAreOnTheColumn(HowManyOfTheOpponent, 1), howManyPawnsItEatsOnTheColumn(HowManyEaten), HowManyEaten > 0, HowManyEaten <> HowManyOfTheOpponent, not gameFinished.
+#reversi[weigthANDlevel, 1, 1]{b, 10}[2 : 12] :- selectedPosition(Row, 8), howManyOpponentsAreOnTheColumn(HowManyOfTheOpponent, 8), howManyPawnsItEatsOnTheColumn(HowManyEaten), HowManyEaten > 0, HowManyEaten <> HowManyOfTheOpponent, not gameFinished.
+#reversi[weigthANDlevel, 1, 1]{b, 10}[2 : 12] :- selectedPosition(1, Column), howManyOpponentsAreOnTheRow(HowManyOfTheOpponent, 1), howManyPawnsItEatsOnTheRow(HowManyEaten), HowManyEaten = 0, HowManyOfTheOpponent > 0, not gameFinished.
+#reversi[weigthANDlevel, 1, 1]{b, 10}[2 : 12] :- selectedPosition(8, Column), howManyOpponentsAreOnTheRow(HowManyOfTheOpponent, 8), howManyPawnsItEatsOnTheRow(HowManyEaten), HowManyEaten = 0, HowManyOfTheOpponent > 0, not gameFinished.
+#reversi[weigthANDlevel, 1, 1]{b, 10}[2 : 12] :- selectedPosition(Row, 1), howManyOpponentsAreOnTheColumn(HowManyOfTheOpponent, 1), howManyPawnsItEatsOnTheColumn(HowManyEaten), HowManyEaten = 0, HowManyOfTheOpponent > 0, not gameFinished.
+#reversi[weigthANDlevel, 1, 1]{b, 10}[2 : 12] :- selectedPosition(Row, 8), howManyOpponentsAreOnTheColumn(HowManyOfTheOpponent, 8), howManyPawnsItEatsOnTheColumn(HowManyEaten), HowManyEaten = 0, HowManyOfTheOpponent > 0, not gameFinished.
+#reversi[weigthANDlevel, 1, 1]{b, 10}[1 : 12] :- selectedPosition(Row, 1), howManyOpponentsAreOnTheColumn(0, 1), not gameFinished.
+#reversi[weigthANDlevel, 1, 1]{b, 10}[1 : 12] :- selectedPosition(Row, 8), howManyOpponentsAreOnTheColumn(0, 8), not gameFinished.
+#reversi[weigthANDlevel, 1, 1]{b, 10}[1 : 12] :- selectedPosition(1, Column), howManyOpponentsAreOnTheRow(0, 1), not gameFinished.
+#reversi[weigthANDlevel, 1, 1]{b, 10}[1 : 12] :- selectedPosition(8, Column), howManyOpponentsAreOnTheRow(0, 8), not gameFinished.
 
 
 % if it wants to put in an edge but leaves a hole
-#reversi[weigthANDlevel, 1, 1]{b, 10}[2 : 10] :- selectedPosition(Row, 1), Row2 = Row + 2, pawnPlaced(Row2, 1, C), myColor(C), Row1 = Row + 1, unoccupiedPosition(Row1, 1).
-#reversi[weigthANDlevel, 1, 1]{b, 10}[2 : 10] :- selectedPosition(Row, 1), Row = Row2 + 2, pawnPlaced(Row2, 1, C), myColor(C), Row = Row1 + 1, unoccupiedPosition(Row1, 1).
-#reversi[weigthANDlevel, 1, 1]{b, 10}[2 : 10] :- selectedPosition(Row, 8), Row2 = Row + 2, pawnPlaced(Row2, 8, C), myColor(C), Row1 = Row + 1, unoccupiedPosition(Row1, 8).
-#reversi[weigthANDlevel, 1, 1]{b, 10}[2 : 10] :- selectedPosition(Row, 8), Row = Row2 + 2, pawnPlaced(Row2, 8, C), myColor(C), Row = Row1 + 1, unoccupiedPosition(Row1, 8).
-#reversi[weigthANDlevel, 1, 1]{b, 10}[2 : 10] :- selectedPosition(1, Column), Column2 = Column + 2, pawnPlaced(1, Column2, C), myColor(C), Column1 = Column + 1, unoccupiedPosition(1, Column1).
-#reversi[weigthANDlevel, 1, 1]{b, 10}[2 : 10] :- selectedPosition(1, Column), Column = Column2 + 2, pawnPlaced(1, Column2, C), myColor(C), Column = Column1 + 1, unoccupiedPosition(1, Column1).
-#reversi[weigthANDlevel, 1, 1]{b, 10}[2 : 10] :- selectedPosition(8, Column), Column2 = Column + 2, pawnPlaced(8, Column2, C), myColor(C), Column1 = Column + 1, unoccupiedPosition(8, Column1).
-#reversi[weigthANDlevel, 1, 1]{b, 10}[2 : 10] :- selectedPosition(8, Column), Column = Column2 + 2, pawnPlaced(8, Column2, C), myColor(C), Column = Column1 + 1, unoccupiedPosition(8, Column1).
+#reversi[weigthANDlevel, 1, 1]{b, 10}[2 : 10] :- selectedPosition(Row, 1), Row2 = Row + 2, pawnPlaced(Row2, 1, C), myColor(C), Row1 = Row + 1, unoccupiedPosition(Row1, 1), not gameFinished.
+#reversi[weigthANDlevel, 1, 1]{b, 10}[2 : 10] :- selectedPosition(Row, 1), Row = Row2 + 2, pawnPlaced(Row2, 1, C), myColor(C), Row = Row1 + 1, unoccupiedPosition(Row1, 1), not gameFinished.
+#reversi[weigthANDlevel, 1, 1]{b, 10}[2 : 10] :- selectedPosition(Row, 8), Row2 = Row + 2, pawnPlaced(Row2, 8, C), myColor(C), Row1 = Row + 1, unoccupiedPosition(Row1, 8), not gameFinished.
+#reversi[weigthANDlevel, 1, 1]{b, 10}[2 : 10] :- selectedPosition(Row, 8), Row = Row2 + 2, pawnPlaced(Row2, 8, C), myColor(C), Row = Row1 + 1, unoccupiedPosition(Row1, 8), not gameFinished.
+#reversi[weigthANDlevel, 1, 1]{b, 10}[2 : 10] :- selectedPosition(1, Column), Column2 = Column + 2, pawnPlaced(1, Column2, C), myColor(C), Column1 = Column + 1, unoccupiedPosition(1, Column1), not gameFinished.
+#reversi[weigthANDlevel, 1, 1]{b, 10}[2 : 10] :- selectedPosition(1, Column), Column = Column2 + 2, pawnPlaced(1, Column2, C), myColor(C), Column = Column1 + 1, unoccupiedPosition(1, Column1), not gameFinished.
+#reversi[weigthANDlevel, 1, 1]{b, 10}[2 : 10] :- selectedPosition(8, Column), Column2 = Column + 2, pawnPlaced(8, Column2, C), myColor(C), Column1 = Column + 1, unoccupiedPosition(8, Column1), not gameFinished.
+#reversi[weigthANDlevel, 1, 1]{b, 10}[2 : 10] :- selectedPosition(8, Column), Column = Column2 + 2, pawnPlaced(8, Column2, C), myColor(C), Column = Column1 + 1, unoccupiedPosition(8, Column1), not gameFinished.
 
 
 % if he can put in an edge and there aren't pieces in the edge
-#reversi[weigthANDlevel, 1, 1]{b, 10}[1 : 10] :- notSelectedPosition(_, 1), columnWithoutPawn(1).
-#reversi[weigthANDlevel, 1, 1]{b, 10}[1 : 10] :- notSelectedPosition(_, 8), columnWithoutPawn(8).
-#reversi[weigthANDlevel, 1, 1]{b, 10}[1 : 10] :- notSelectedPosition(1, _), rowWithoutPawn(1).
-#reversi[weigthANDlevel, 1, 1]{b, 10}[1 : 10] :- notSelectedPosition(8, _), rowWithoutPawn(8).
+#reversi[weigthANDlevel, 1, 1]{b, 10}[1 : 10] :- notSelectedPosition(_, 1), columnWithoutPawn(1), not gameFinished.
+#reversi[weigthANDlevel, 1, 1]{b, 10}[1 : 10] :- notSelectedPosition(_, 8), columnWithoutPawn(8), not gameFinished.
+#reversi[weigthANDlevel, 1, 1]{b, 10}[1 : 10] :- notSelectedPosition(1, _), rowWithoutPawn(1), not gameFinished.
+#reversi[weigthANDlevel, 1, 1]{b, 10}[1 : 10] :- notSelectedPosition(8, _), rowWithoutPawn(8), not gameFinished.
 
 
 % if it can put in an edge and there aren't pieces in the edge next to him
-#reversi[weigthANDlevel, 1, 1]{b, 10}[1 : 6] :- notSelectedPosition(Row, 1), RowB = Row + 1, notPawnOfTheOpponent(RowB, 1), Row = RowA + 1, notPawnOfTheOpponent(RowA, 1).
-#reversi[weigthANDlevel, 1, 1]{b, 10}[1 : 6] :- notSelectedPosition(Row, 8), RowB = Row + 1, notPawnOfTheOpponent(RowB, 8), Row = RowA + 1, notPawnOfTheOpponent(RowA, 8).
-#reversi[weigthANDlevel, 1, 1]{b, 10}[1 : 6] :- notSelectedPosition(1, Column), ColumnD = Column + 1, notPawnOfTheOpponent(1, ColumnD), Column = ColumnS + 1, notPawnOfTheOpponent(1, ColumnS).
-#reversi[weigthANDlevel, 1, 1]{b, 10}[1 : 6] :- notSelectedPosition(8, Column), ColumnD = Column + 1, notPawnOfTheOpponent(8, ColumnD), Column = ColumnS + 1, notPawnOfTheOpponent(8, ColumnS).
+#reversi[weigthANDlevel, 1, 1]{b, 10}[1 : 6] :- notSelectedPosition(Row, 1), RowB = Row + 1, notPawnOfTheOpponent(RowB, 1), Row = RowA + 1, notPawnOfTheOpponent(RowA, 1), not gameFinished.
+#reversi[weigthANDlevel, 1, 1]{b, 10}[1 : 6] :- notSelectedPosition(Row, 8), RowB = Row + 1, notPawnOfTheOpponent(RowB, 8), Row = RowA + 1, notPawnOfTheOpponent(RowA, 8), not gameFinished.
+#reversi[weigthANDlevel, 1, 1]{b, 10}[1 : 6] :- notSelectedPosition(1, Column), ColumnD = Column + 1, notPawnOfTheOpponent(1, ColumnD), Column = ColumnS + 1, notPawnOfTheOpponent(1, ColumnS), not gameFinished.
+#reversi[weigthANDlevel, 1, 1]{b, 10}[1 : 6] :- notSelectedPosition(8, Column), ColumnD = Column + 1, notPawnOfTheOpponent(8, ColumnD), Column = ColumnS + 1, notPawnOfTheOpponent(8, ColumnS), not gameFinished.
 
 notPawnOfTheOpponent(Row, Column) :- unoccupiedPosition(Row, Column).
 notPawnOfTheOpponent(Row, Column) :- pawnPlaced(Row, Column, C), myColor(C).
 
 
 % if it can put in an edge and in that edge immediately to the left and immediately to its right there is the opponent
-#reversi[weigthANDlevel, 1, 1]{b, 10}[1 : 6] :- notSelectedPosition(Row, 1), RowB = Row + 1, pawnPlaced(RowB, 1, Oc), Row = RowA + 1, pawnPlaced(RowA, 1, Oc), opponentColor(Oc).
-#reversi[weigthANDlevel, 1, 1]{b, 10}[1 : 6] :- notSelectedPosition(Row, 8), RowB = Row + 1, pawnPlaced(RowB, 8, Oc), Row = RowA + 1, pawnPlaced(RowA, 8, Oc), opponentColor(Oc).
-#reversi[weigthANDlevel, 1, 1]{b, 10}[1 : 6] :- notSelectedPosition(1, Column), ColumnD = Column + 1, pawnPlaced(1, ColumnD, Oc), Column = ColumnS + 1, pawnPlaced(1, ColumnS, Oc), opponentColor(Oc).
-#reversi[weigthANDlevel, 1, 1]{b, 10}[1 : 6] :- notSelectedPosition(8, Column), ColumnD = Column + 1, pawnPlaced(8, ColumnD, Oc), Column = ColumnS + 1, pawnPlaced(8, ColumnS, Oc), opponentColor(Oc).
+#reversi[weigthANDlevel, 1, 1]{b, 10}[1 : 6] :- notSelectedPosition(Row, 1), RowB = Row + 1, pawnPlaced(RowB, 1, Oc), Row = RowA + 1, pawnPlaced(RowA, 1, Oc), opponentColor(Oc), not gameFinished.
+#reversi[weigthANDlevel, 1, 1]{b, 10}[1 : 6] :- notSelectedPosition(Row, 8), RowB = Row + 1, pawnPlaced(RowB, 8, Oc), Row = RowA + 1, pawnPlaced(RowA, 8, Oc), opponentColor(Oc), not gameFinished.
+#reversi[weigthANDlevel, 1, 1]{b, 10}[1 : 6] :- notSelectedPosition(1, Column), ColumnD = Column + 1, pawnPlaced(1, ColumnD, Oc), Column = ColumnS + 1, pawnPlaced(1, ColumnS, Oc), opponentColor(Oc), not gameFinished.
+#reversi[weigthANDlevel, 1, 1]{b, 10}[1 : 6] :- notSelectedPosition(8, Column), ColumnD = Column + 1, pawnPlaced(8, ColumnD, Oc), Column = ColumnS + 1, pawnPlaced(8, ColumnS, Oc), opponentColor(Oc), not gameFinished.
 
 
 % if it choose a "very bad" position
-#reversi[weigthANDlevel, 1, 1]{b, 10}[Weight : 4] :- selectedPosition(Row, Column), stablePawns(Row, Column, Weight), Weight <> 16.
+#reversi[weigthANDlevel, 1, 1]{b, 10}[Weight : 4] :- selectedPosition(Row, Column), stablePawns(Row, Column, Weight), Weight <> 16, not gameFinished.
 
 
 % if there aren't pawns in an edge it should not put in the cells just before the edge
 % because otherwise it allows the opponent to put first a pawn on the edge
-#reversi[weigthANDlevel, 1, 1]{b, 10}[1 : 4] :- columnWithoutPawn(1), selectedPosition(_, 2).
-#reversi[weigthANDlevel, 1, 1]{b, 10}[1 : 4] :- columnWithoutPawn(8), selectedPosition(_, 7).
-#reversi[weigthANDlevel, 1, 1]{b, 10}[1 : 4] :- rowWithoutPawn(1), selectedPosition(2, _).
-#reversi[weigthANDlevel, 1, 1]{b, 10}[1 : 4] :- rowWithoutPawn(8), selectedPosition(7, _).
+#reversi[weigthANDlevel, 1, 1]{b, 10}[1 : 4] :- columnWithoutPawn(1), selectedPosition(_, 2), not gameFinished.
+#reversi[weigthANDlevel, 1, 1]{b, 10}[1 : 4] :- columnWithoutPawn(8), selectedPosition(_, 7), not gameFinished.
+#reversi[weigthANDlevel, 1, 1]{b, 10}[1 : 4] :- rowWithoutPawn(1), selectedPosition(2, _), not gameFinished.
+#reversi[weigthANDlevel, 1, 1]{b, 10}[1 : 4] :- rowWithoutPawn(8), selectedPosition(7, _), not gameFinished.
 
 
 

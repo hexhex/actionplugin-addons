@@ -18,11 +18,10 @@
 DLVHEX_NAMESPACE_BEGIN
 
 Reversi::Environment::Environment() {
-	// Initialize here your Environment
+	waitTime = 300;
 }
 
 Reversi::Environment::~Environment() {
-	// Frees the memory allocated dynamically
 }
 
 void Reversi::Environment::getPawnPlaced(list<PawnPlaced>& listPawnPlaced,
@@ -127,7 +126,7 @@ void Reversi::Environment::setPassword(const std::string& pw) {
 	password = pw;
 }
 
-void Reversi::Environment::wait() const {
+void Reversi::Environment::wait() {
 
 	std::cout << "start wait" << std::endl;
 
@@ -135,8 +134,8 @@ void Reversi::Environment::wait() const {
 
 	do {
 
-		// from 30 to 60 seconds
-		int sleepTime = rand() % 30 + 30;
+		// from waitTime to waitTime + 30 seconds
+		int sleepTime = rand() % 30 + waitTime;
 		std::cout << "sleepTime " << sleepTime << std::endl;
 
 		sleep(sleepTime);
@@ -153,7 +152,13 @@ void Reversi::Environment::wait() const {
 
 		std::cout << "exit_status " << exit_status << std::endl;
 
+		if (exit_status != 0)
+			waitTime += 50;
+
 	} while (exit_status != 0);
+
+	if (waitTime > 1)
+		waitTime = waitTime / 2;
 
 	std::cout << "end wait" << std::endl;
 

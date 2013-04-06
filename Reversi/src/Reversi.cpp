@@ -220,8 +220,8 @@ void Reversi::PawnPlacedExternalAtom::retrieve(const Environment& environment,
 		std::stringstream color;
 		color << it->getColor();
 
-		std::cout << row.str() << ", " << column.str() << ", " << color.str()
-				<< std::endl;
+//		std::cout << row.str() << ", " << column.str() << ", " << color.str()
+//				<< std::endl;
 
 		Tuple out;
 

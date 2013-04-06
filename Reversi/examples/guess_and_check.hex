@@ -52,7 +52,7 @@ selectedPosition(Row, Column) v notSelectedPosition(Row, Column) :- validPositio
 
 
 % Check: there must be a single ground atom of selectedPosition
-:- not #count{Row, Column : selectedPosition(Row, Column)} <= 1.
+:- not #count{Row, Column : selectedPosition(Row, Column)} = 1, not gameFinished.
 
 
 #reversi[makeAMove, Row, Column]{b, 5} :- selectedPosition(Row, Column), not gameFinished.

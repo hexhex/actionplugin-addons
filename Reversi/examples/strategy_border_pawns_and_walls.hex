@@ -51,4 +51,4 @@ closeToTheEmpty(Row, Column) :- pawnTurnedWithCurrentMove(Row, Column), not pawn
 closeToTheEmpty(Row, Column) :- pawnTurnedWithCurrentMove(Row, Column), not pawnTurnedWithCurrentMove(Row2, Column2), unoccupiedPosition(Row2, Column2), Row2 = Row + 1, Column2 = Column + 1.
 
 
-#reversi[weigthANDlevel, 1, 1]{b, 10}[1 : 3] :- frontierPawnOfComputerAfterCurrentMove(Row, Column), not gameFinished.
+#reversi[weigthANDlevel, Row, Column]{b, 10}[1 : 3] :- frontierPawnOfComputerAfterCurrentMove(Row, Column), not gameFinished.

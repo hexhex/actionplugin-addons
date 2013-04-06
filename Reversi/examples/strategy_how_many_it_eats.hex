@@ -59,4 +59,4 @@ howManyPawnsItEatsOnTheDiagonal(HowMany) :- selectedPosition(Row, Column), #coun
 howManyPawnsItEats(HowMany) :- howManyPawnsItEatsOnTheRow(HowManyOnRow), howManyPawnsItEatsOnTheColumn(HowManyOnColumn), howManyPawnsItEatsOnTheDiagonal(HowManyOnDiagonal), HowManyOnRowAndOnColumn = HowManyOnRow + HowManyOnColumn, HowMany = HowManyOnRowAndOnColumn + HowManyOnDiagonal, possibleValue(HowMany), possibleValue(HowManyOnRowAndOnColumn).
 
 
-#reversi[weigthANDlevel, 1, 1]{b, 10}[Q : 2] :- howManyPawnsItEats(HowMany), 64 = Q + HowMany, possibleValue(Q), not gameFinished.
+#reversi[weigthANDlevel, HowMany, 1]{b, 10}[Q : 2] :- howManyPawnsItEats(HowMany), 64 = Q + HowMany, possibleValue(Q), not gameFinished.

@@ -114,8 +114,7 @@ void SudokuPlugin::Environment::insertNumber(unsigned int row,
 		throw PluginError("Wrong input argument type (number in insertNumber)");
 
 	grid[row][column] = number;
-	std::cerr << "Inserted " << number << " in [" << row << ";" << column << "]"
-			<< std::endl;
+	DBGLOG(PLUGIN, "Inserted " << number << " in [" << row << ";" << column << "]");
 
 	changed = true;
 
@@ -313,6 +312,9 @@ bool SudokuPlugin::Environment::isCorrect() const {
 const list<unsigned int> SudokuPlugin::Environment::getNumbersNotCandidates(
 		unsigned int row, unsigned int column) const {
 
+	if (row >= numbers || column >= numbers)
+		throw PluginError("Wrong input argument type (in getNumber)");
+
 	list<unsigned int> numbersNotCandidates;
 
 	for (unsigned int k = 0; k < numbers; k++)
@@ -335,8 +337,8 @@ void SudokuPlugin::Environment::insertNumberNotCandidate(unsigned int row,
 				"Wrong input argument type (number in insertNumberNotCandidate)");
 
 	gridNotCandidates[row][column][number - 1] = true;
-	std::cerr << "Inserted not candidate " << number << " in [" << row << ";"
-			<< column << "]" << std::endl;
+	DBGLOG(PLUGIN, "Inserted not candidate " << number << " in [" << row << ";"
+			<< column << "]");
 
 	unsigned int number_candidate = 0;
 	unsigned int k = 0;
@@ -351,9 +353,8 @@ void SudokuPlugin::Environment::insertNumberNotCandidate(unsigned int row,
 		if (number_candidate == 0)
 			throw PluginError("There isn't remained any candidate number");
 		else {
-			std::cerr << "There is only one candidate: " << number
-					<< ", so was inserted in [" << row << ";" << column << "]"
-					<< std::endl;
+			DBGLOG(PLUGIN, "There is only one candidate: " << number
+					<< ", so was inserted in [" << row << ";" << column << "]");
 			grid[row][column] = number_candidate;
 		}
 
@@ -479,17 +480,22 @@ void SudokuPlugin::SudokuAtomGetNumber::retrieve(const Environment& environment,
 				"Wrong input argument type (aren't IntegerTerm in retrieve)");
 
 	std::stringstream concatstream;
-	concatstream << environment.getNumber(id1.address, id2.address);
 
-	Tuple out;
+	try {
 
-	//
-	// call Term::Term with second argument true to get a quoted string!
-	//
-	Term term(ID::MAINKIND_TERM | ID::SUBKIND_TERM_CONSTANT,
-			std::string(concatstream.str()));
-	out.push_back(registry.storeTerm(term));
-	answer.get().push_back(out);
+		concatstream << environment.getNumber(id1.address, id2.address);
+		
+		Tuple out;
+		Term term(ID::MAINKIND_TERM | ID::SUBKIND_TERM_CONSTANT,
+					 std::string(concatstream.str()));
+		out.push_back(registry.storeTerm(term));
+		answer.get().push_back(out);
+		
+	} catch(PluginError e) {
+		; // do nothing
+	}
+	
+
 
 }
 
@@ -561,26 +567,32 @@ void SudokuPlugin::SudokuAtomGetNumbersNotCandidates::retrieve(
 		throw PluginError(
 				"Wrong input argument type (aren't IntegerTerm in retrieve)");
 
-	const list<unsigned int> numbers = environment.getNumbersNotCandidates(
-			id1.address, id2.address);
+	try {
+		
+		const list<unsigned int> numbers = environment.getNumbersNotCandidates(
+				id1.address, id2.address);
 
-	if (numbers.empty())
-		return;
+		if (numbers.empty())
+			return;
 
-	for (list<unsigned int>::const_iterator it = numbers.begin();
-			it != numbers.end(); it++) {
+		for (list<unsigned int>::const_iterator it = numbers.begin();
+				it != numbers.end(); it++) {
 
-		Tuple out;
+			Tuple out;
 
-		std::stringstream concatstream;
-		concatstream << *it;
+			std::stringstream concatstream;
+			concatstream << *it;
 
-		Term term(ID::MAINKIND_TERM | ID::SUBKIND_TERM_CONSTANT,
-				std::string(concatstream.str()));
-		out.push_back(registry.storeTerm(term));
+			Term term(ID::MAINKIND_TERM | ID::SUBKIND_TERM_CONSTANT,
+					std::string(concatstream.str()));
+			out.push_back(registry.storeTerm(term));
 
-		answer.get().push_back(out);
+			answer.get().push_back(out);
 
+		}
+	
+	} catch(PluginError e) {
+		; // do nothing
 	}
 
 }

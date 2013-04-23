@@ -1,0 +1,131 @@
+%#maxint=50.
+
+#evalunit(0).
+
+firstExecution :- &iteration[](I), I = 1.
+
+
+%unit(0).unit(1).unit(2).unit(3).unit(4).unit(5).unit(6).unit(7).unit(8).unit(9).unit(10).unit(11).unit(12).unit(13).unit(14).unit(15).unit(16).unit(17).unit(18).unit(19).unit(20).unit(21).unit(22).unit(23).unit(24).
+
+%symbol(1).symbol(2).symbol(3).symbol(4).symbol(5).symbol(6).symbol(7).symbol(8).symbol(9).symbol(10).symbol(11).symbol(12).symbol(13).symbol(14).symbol(15).symbol(16).symbol(17).symbol(18).symbol(19).symbol(20).symbol(21).symbol(22).symbol(23).symbol(24).symbol(25).
+cell(X,Y):-unit(X),unit(Y). 
+
+#evalunit(1).
+
+value(R, C, N) :- &getNumber[R, C](N), cell(R, C), symbol(N), not firstExecution.
+oldNotCandidate(R, C, N) :- &getNumbersNotCandidates[R, C](N), symbol(N), cell(R, C).
+
+%value(0,7,1). value(0,8,2). value(1,4,3). value(1,5,5). value(2,3,6).value(2,7,7). value(3,0,7). value(3,6,3). value(4,3,4). value(4,6,8). value(5,0,1). value(6,3,1). value(6,4,2). value(7,1,8). value(7,7,4).value(8,1,5). value(8,6,6).
+
+%value(0,7,3). value(0,8,1). value(1,1,8). value(1,4,4). value(2,1,7). value(3,0,1). value(3,2,6). value(3,3,3). value(3,7,7). value(4,0,3). value(5,4,8). value(6,0,5). value(6,1,4). value(6,6,8). value(7,3,6). value(7,6,2). value(8,3,1). value(3,8,8). value(4,2,8). value(7,1,1).
+
+#sudoku[resetChanged, 0, 0, 0]{b, 1}.
+
+#sudoku[setDimension, D, 0, 0]{b, 1} :- sizeblock(SB1), sizeblock(SB2), D = SB1 * SB2, #int(D), firstExecution.
+
+#sudoku[insertNumber, X, Y, N]{b, 3} :- firstExecution, value(X,Y,N).
+
+#sudoku[insertNumber, X, Y, N]{b, 3} :- newValue(X,Y,N).
+
+notcandidate(R,C,N) :- oldNotCandidate(R, C, N).
+
+notCandidateToAdd(R, C, N) :- not oldNotCandidate(R, C, N), notcandidate(R, C, N).
+notCandidateToAdd(R, C, N) :- not oldNotCandidate(R, C, N), newNotcandidate(R, C, N).
+
+#sudoku[insertNumberNotCandidate, R, C, N]{b, 4} :- notCandidateToAdd(R, C, N).
+
+% #sudoku[print, 0, 0, 0]{b, 8}.
+#sudoku[print, 0, 0, 0]{b, 8} :-  sudokuIsCompleted.
+% #sudoku[writeToFile, "fileOutput.txt", 0, 0]{b, 8} :- not sudokuIsCompleted.
+
+sudokuIsCompleted :- &sudokuIsCompleted[]().
+
+#acthexContinue{b} :- not sudokuIsCompleted.
+
+% #iterationActionAtom[print]{b, 9}.
+#iterationActionAtom[print]{b, 9} :-  sudokuIsCompleted.
+
+
+%Sudoku Contraints
+:- value(X1,Y,N), value(X2,Y,N), X1!=X2.
+%-value(X,Y1,N) :- unit(Y1), unit(X), value(X,Y2,N), Y1<>Y2. 
+
+:- value(X,Y1,N), value(X,Y2,N), Y1!=Y2.
+%-value(X1,Y,N) :- unit(X1), unit(Y), value(X2,Y,N), X1<>X2.
+
+:- value(X1,Y1,N), value(X2,Y2,N), sameblock(X1,Y1,X2,Y2).
+%-value(X1,Y1,N) :- unit(X1), unit(Y1), value(X2,Y2,N), sameblock(X1,Y1,X2,Y2).
+
+:-value(X,Y,N),value(X,Y,N1),N!=N1.
+:-value(X,Y,N),newValue(X,Y,N1),N!=N1.
+
+%Auxiliary predicates: definition of block
+inblock(B,X,Y) :- unit(B),unit(X), unit(Y), div(X,N,R), div(Y,N,S), Y1 = S * N, B = R + Y1,sizeblock(N).
+sameblock(X1,Y1,X2,Y2) :- inblock(B,X1,Y1), inblock(B,X2,Y2),X1!=X2.
+sameblock(X1,Y1,X2,Y2) :- inblock(B,X1,Y1), inblock(B,X2,Y2),Y1!=Y2.
+div(X,Y,B) :- XminusDelta = Y*B, X = XminusDelta + Delta, Delta<Y,unit(X),unit(Y),unit(B),unit(XminusDelta),unit(Delta).
+
+
+%Select only not value cell
+assigned(X,Y):- value(X,Y,_).
+nogiven(X,Y):- not assigned(X,Y),cell(X,Y).
+
+
+%Calculate not candidates
+notcandidate(X,Y,N):-value(X,Y1,N),Y!=Y1,nogiven(X,Y). %constraint on same row
+notcandidate(X,Y,N):-value(X1,Y,N),X!=X1,nogiven(X,Y).%constraint on same column
+notcandidate(X,Y,N):-value(X1,Y1,N),sameblock(X,Y,X1,Y1),nogiven(X,Y). %constraint on same block
+notcandidate(X,Y,N1):-value(X,Y,N),symbol(N1),N1!=N.
+
+
+%Calculates candidates
+candidate(X,Y,N):- not notcandidate(X,Y,N),symbol(N),cell(X,Y).
+
+
+%Auxiliary predicates: two different cell share a unit
+shareAunit(X,Y1,X,Y2):-cell(X,Y1),cell(X,Y2),Y1!=Y2,not sameCell(X,Y1,X,Y2).
+shareAunit(X1,Y,X2,Y):-cell(X1,Y),cell(X2,Y),X1!=X2,not sameCell(X1,Y,X2,Y).
+shareAunit(X1,Y1,X2,Y2):-sameblock(X1,Y1,X2,Y2).
+
+%Auxiliary predicates: two different cell share a unit of type r (row), c (column), b (block)
+shareAunitType(X,Y1,X,Y2,r):-cell(X,Y1),cell(X,Y2),Y1!=Y2,not sameCell(X,Y1,X,Y2).
+shareAunitType(X1,Y,X2,Y,c):-cell(X1,Y),cell(X2,Y),X1!=X2,not sameCell(X1,Y,X2,Y).
+shareAunitType(X1,Y1,X2,Y2,b):-sameblock(X1,Y1,X2,Y2).
+
+%Auxiliary predicates: two cell are the same
+sameCell(X1,Y1,X2,Y2):-cell(X1,Y1),cell(X2,Y2),Y1=Y2,X1=X2.
+
+
+%sizeblock(5).
+
+%Naked Single
+
+candidatesAreMoreThan2(X,Y):-candidate(X,Y,N),candidate(X,Y,N1),N!=N1.
+newValue(X,Y,N):-candidate(X,Y,N),not candidatesAreMoreThan2(X,Y),nogiven(X,Y).
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+%Hidden Single
+
+rowCandidatesAreMoreThan2(X,Y,N):-candidate(X,Y1,N),Y1!=Y,unit(Y).
+newValue(X,Y,N):-candidate(X,Y,N),not rowCandidatesAreMoreThan2(X,Y,N),nogiven(X,Y).
+columnCandidatesAreMoreThan2(X,Y,N):-candidate(X1,Y,N),X1!=X,unit(X).
+newValue(X,Y,N):-candidate(X,Y,N),not columnCandidatesAreMoreThan2(X,Y,N),nogiven(X,Y).
+blockCandidatesAreMoreThan2(X,Y,N):-candidate(X1,Y1,N),sameblock(X,Y,X1,Y1).
+newValue(X,Y,N):-candidate(X,Y,N),not blockCandidatesAreMoreThan2(X,Y,N),nogiven(X,Y).

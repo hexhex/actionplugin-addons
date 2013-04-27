@@ -1,0 +1,34 @@
+%
+% Guess and Check version of Sudoku encoding with gringo+clasp
+%
+
+%% TO BE SET BEFORE
+sizeBlock(9).
+pos(0..80).
+symbol(1..81).
+%%
+
+1{value(X,Y,N) : symbol(N)} 1 :- pos(X),pos(Y).
+
+:- value(X,Y,N), value(X,Y,N1), N1 != N.
+
+assigned(X,Y):- value(X,Y,N).
+:- pos(X),pos(Y),not assigned(X,Y).
+
+% Check rows and columns
+:- value(X,Y1,Z), value(X,Y2,Z), Y1!=Y2.
+:- value(X1,Y,Z), value(X2,Y,Z), X1!=X2.
+
+% Check subvalue
+:- value(X1,Y1,Z), value(X2,Y2,Z), Y1 != Y2, samesquare(X1,Y1,X2,Y2).
+:- value(X1,Y1,Z), value(X2,Y2,Z), X1 != X2, samesquare(X1,Y1,X2,Y2).
+
+%
+% Auxiliary predicates
+%
+insquare(Z,X,Y) :- pos(Z), pos(X), pos(Y), div(X,N,R), div(Y,N,S), Y1 = S * N, Z = R + Y1,sizeBlock(N).
+
+samesquare(X1,Y1,X2,Y2) :- insquare(Z,X1,Y1), insquare(Z,X2,Y2).
+
+%Auxiliary: X divided by Y is Z
+div(X,Y,Z) :- XminusDelta = Y*Z, X = XminusDelta + Delta, Delta < Y,pos(X),pos(Y),pos(Z),pos(XminusDelta),pos(Delta).

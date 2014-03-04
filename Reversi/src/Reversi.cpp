@@ -375,6 +375,8 @@ DLVHEX_NAMESPACE_END
 IMPLEMENT_PLUGINABIVERSIONFUNCTION
 
 // return plain C type s.t. all compilers and linkers will like this code
-extern "C" void * PLUGINIMPORTFUNCTION() {
+extern "C"
+DLVHEX_PLUGINEXPORT
+void * PLUGINIMPORTFUNCTION() {
 return reinterpret_cast<void*>(& DLVHEX_NAMESPACE theReversi);
 }

@@ -3,13 +3,13 @@
 	url = https://github.com/hexhex/build.git
 [submodule "SmartRobot_2x/dlvhex-common"]
 	path = SmartRobot_2x/dlvhex-common
-	url = github.com/hexhex/build.git
+	url = https://github.com/hexhex/build.git
 [submodule "Sudoku_2x/dlvhex-common"]
 	path = Sudoku_2x/dlvhex-common
-	url = github.com/hexhex/build.git
+	url = https://github.com/hexhex/build.git
 [submodule "kbmod/dlvhex-common"]
 	path = kbmod/dlvhex-common
-	url = github.com/hexhex/build.git
+	url = https://github.com/hexhex/build.git
 [submodule "Reversi/dlvhex-common"]
 	path = Reversi/dlvhex-common
-	url = github.com/hexhex/build.git
+	url = https://github.com/hexhex/build.git

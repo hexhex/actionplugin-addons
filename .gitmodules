@@ -1,6 +1,6 @@
 [submodule "Reversi/dlvhex-common"]
-        path = Reversi/dlvhex-common
-        url = https://github.com/hexhex/build.git
+	path = Reversi/dlvhex-common
+	url = https://github.com/hexhex/build.git
 [submodule "robot/dlvhex-common"]
 	path = robot/dlvhex-common
 	url = https://github.com/hexhex/build.git

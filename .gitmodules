@@ -1,3 +1,6 @@
+[submodule "Reversi/dlvhex-common"]
+        path = Reversi/dlvhex-common
+        url = https://github.com/hexhex/build.git
 [submodule "robot/dlvhex-common"]
 	path = robot/dlvhex-common
 	url = https://github.com/hexhex/build.git
@@ -9,8 +12,5 @@
 	url = https://github.com/hexhex/build.git
 [submodule "kbmod/dlvhex-common"]
 	path = kbmod/dlvhex-common
-	url = https://github.com/hexhex/build.git
-[submodule "Reversi/dlvhex-common"]
-	path = Reversi/dlvhex-common
 	url = https://github.com/hexhex/build.git
 

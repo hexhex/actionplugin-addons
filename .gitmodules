@@ -13,3 +13,4 @@
 [submodule "Reversi/dlvhex-common"]
 	path = Reversi/dlvhex-common
 	url = https://github.com/hexhex/build.git
+

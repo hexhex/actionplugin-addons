@@ -1,0 +1,74 @@
+time(0).time(1).time(2).time(3).time(4).time(5).time(6).
+%time(7).time(8).time(9).time(10).
+%time(11).time(12).time(13).
+%time(14).time(15).time(16).
+timea(0).timea(1).timea(2).timea(3).timea(4).timea(5).
+%timea(6).timea(7).timea(8).timea(9).
+%timea(10).timea(11).timea(12).
+%timea(13).timea(14).timea(15).
+row(0).row(1).row(2).row(3).
+column(0).column(1).column(2).column(3).
+
+moveRight(T) v -moveRight(T) :- timea(T).
+moveDown(T) v -moveDown(T) :- timea(T).
+moveLeft(T) v -moveLeft(T) :- timea(T).
+moveUp(T) v -moveUp(T) :- timea(T).
+
+%robot's memory
+robotAt(X,Y,0) :- &robotLocation[](X,Y), row(X), column(Y).
+
+obstacleAt(X,Y) :- &obstacleLocation[](X,Y), row(X), column(Y).
+%-obstacleAt(X,Y) :- not obstacleAt(X,Y), row(X), column(Y).
+
+sensed(X,Y) :- &visited[](X,Y), row(X), column(Y).
+visited(X,Y) :- sensed(X,Y).
+
+visited(X,Y) :- obstacleAt(X,Y), row(X), column(Y).
+visited(X,Y) :- robotAt(X,Y,T), time(T), row(X), column(Y).
+
+%inertia law
+robotAt(X,Y,T1) :- not -robotAt(X,Y,T1), robotAt(X,Y,T), T1=T+1, time(T), time(T1), row(X), column(Y). 
+-robotAt(X,Y,T1) :- not robotAt(X,Y,T1), -robotAt(X,Y,T), T1=T+1, time(T), time(T1), row(X), column(Y). 
+
+-robotAt(X1,Y1,T) :- robotAt(X,Y,T), X1!=X, time(T), row(X), row(X1), column(Y), column(Y1).
+-robotAt(X1,Y1,T) :- robotAt(X,Y,T), Y1!=Y, time(T), row(X), row(X1), column(Y), column(Y1).
+
+:- robotAt(X,Y,T), obstacleAt(X,Y), time(T), row(X), column(Y).
+
+
+:- robotAt(3,Y,T), moveDown(T), time(T), column(Y).
+robotAt(X1,Y,T1) :- moveDown(T), robotAt(X,Y,T), T1=T+1, X1=X+1, time(T), time(T1), row(X) , row(X1), column(Y).
+:- robotAt(0,Y,T), moveUp(T), time(T), column(Y).
+robotAt(X1,Y,T1) :- moveUp(T), robotAt(X,Y,T), T1=T+1, X1=X-1, time(T), time(T1), row(X), row(X1), column(Y).
+
+:- robotAt(X,3,T), moveRight(T), time(T), row(X).
+robotAt(X,Y1,T1) :- moveRight(T), robotAt(X,Y,T), T1=T+1, Y1=Y+1, time(T), time(T1), row(X), column(Y), column(Y1).
+:- robotAt(X,0,T), moveLeft(T), time(T), row(X).
+robotAt(X,Y1,T1) :- moveLeft(T), robotAt(X,Y,T), T1=T+1, Y1=Y-1, time(T), time(T1), row(X), column(Y), column(Y1).
+
+
+#robot[resetFailureReason,0]{b,0}.
+
+#robot[sense,0]{b,T} :- not sensed(X,Y), robotAt(X,Y,T), row(X), column(Y), time(T).
+
+#robot[move,right]{b,T} :- moveRight(T),timea(T).
+#robot[move,down]{b,T}:- moveDown(T),timea(T).
+#robot[move,left]{b,T}:- moveLeft(T),timea(T).
+#robot[move,up]{b,T}:- moveUp(T),timea(T).
+
+
+%goal1 :- robotAt(3,3,T), T>=3, time(T).
+goal1 :- robotAt(3,3,6).
+:~ not goal1.[2:1]
+
+:~ goal1, not visited(X,Y), row(X), column(Y).[1:1]
+%:- not visited(X,Y), row(X), column(Y).
+
+reached :- &reached[]().
+%reached :- robotAt(3,3,6).
+
+#acthexContinue{b} :- not reached.
+
+%:- not robotAt(3,3,6).
+
+

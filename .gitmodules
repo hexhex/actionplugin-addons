@@ -13,3 +13,6 @@
 [submodule "Reversi/dlvhex-common"]
 	path = Reversi/dlvhex-common
 	url = https://github.com/hexhex/build.git
+[submodule "ExploringRobot/dlvhex-common"]
+	path = ExploringRobot/dlvhex-common
+	url = https://github.com/hexhex/build.git

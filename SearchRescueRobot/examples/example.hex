@@ -1,0 +1,57 @@
+time(0).time(1).time(2).time(3).time(4).time(5).time(6).
+timea(0).timea(1).timea(2).timea(3).timea(4).timea(5).
+row(0).row(1).row(2).
+column(0).column(1).
+
+reachable(0,0).
+reachable(0,1).
+reachable(1,1).
+reachable(2,0).
+reachable(2,1).
+
+obstacleAt(1,0).
+
+robotAt(0,0,0).
+goal(1,1).
+
+goto(X,Y,T) v -goto(X,Y,T) :- timea(T),row(X),column(Y).
+
+%robot's memory
+-robotAt(X,Y,T) :- not robotAt(X,Y,T), row(X), column(Y), time(T).
+%law of inertia
+robotAt(X,Y,T1) :- not -robotAt(X,Y,T1), robotAt(X,Y,T), T1=T+1, time(T), time(T1), row(X), column(Y). 
+-robotAt(X,Y,T1) :- not robotAt(X,Y,T1), -robotAt(X,Y,T), T1=T+1, time(T), time(T1), row(X), column(Y). 
+%a robot can't be in more than one place
+-robotAt(X1,Y1,T) :- robotAt(X,Y,T), X1!=X, time(T), row(X), row(X1), column(Y), column(Y1).
+-robotAt(X1,Y1,T) :- robotAt(X,Y,T), Y1!=Y, time(T), row(X), row(X1), column(Y), column(Y1).
+
+%the robot can't be at a non-reachable cell
+:- robotAt(X,Y,T), not reachable(X,Y), time(T), row(X), column(Y).
+
+%the conditions for a direct path not to exist between two cells
+notpathexists(X,Y,X1,Y1) :- reachable(X,Y), reachable(X1,Y1), obstacleAt(X2,Y2), Y<=Y2, Y2<=Y1, X=X1, X1=X2.
+notpathexists(X1,Y1,X,Y) :- notpathexists(X,Y,X1,Y1).
+notpathexists(X,Y,X1,Y1) :- reachable(X,Y), reachable(X1,Y1), obstacleAt(X2,Y2), X<=X2, X2<=X1, Y=Y1, Y1=Y2.
+notpathexists(X,Y,X1,Y1) :- reachable(X,Y), reachable(X1,Y1), X1!=X, Y1!=Y.
+
+%the action of going to a specific cell (X,Y)
+robotAt(X,Y,T1) :- goto(X,Y,T), robotAt(X1,Y1,T), T1=T+1, row(X), column(Y), timea(T).
+:- goto(X,Y,T), robotAt(X,Y,T), row(X), column(Y), timea(T).
+:- goto(X1,Y1,T), robotAt(X,Y,T), notpathexists(X,Y,X1,Y1), row(X), column(Y), row(X1), column(Y1), timea(T). 
+
+%can not go to some other cell once it reaches the goal point
+:- goto(X1,Y1,T), goal(X,Y), robotAt(X,Y,T), not personDetected, row(X),column(Y),row(X1),column(Y1), timea(T).
+
+-goal(X,Y) :- not goal(X,Y),row(X),column(Y).
+
+:- not robotAt(X,Y,6), goal(X,Y), row(X),column(Y).
+
+%#robot[resetFailureReason,0,0,0]{b,0}[0:1].
+
+%add the knowledge of the current sensing to the memory
+%#robot[sense,0,0,T]{b,T}[1:1] :- not visited(X,Y), robotAt(X,Y,T), row(X), column(Y), time(T).
+
+#robot[goto,X,Y,T]{b,T}[2:1]:- goto(X,Y,T), row(X), column(Y),timea(T).
+
+%#robot[pick,person,0,T]{b,T}[3:1] :- pickPerson(T), timea(T).
+

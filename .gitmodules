@@ -16,3 +16,6 @@
 [submodule "ExploringRobot/dlvhex-common"]
 	path = ExploringRobot/dlvhex-common
 	url = https://github.com/hexhex/build.git
+[submodule "SearchRescueRobot/dlvhex-common"]
+	path = SearchRescueRobot/dlvhex-common
+	url = https://github.com/hexhex/build.git

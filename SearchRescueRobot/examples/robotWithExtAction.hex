@@ -1,0 +1,131 @@
+%#maxint=10.
+
+time(0).time(1).time(2).time(3).time(4).time(5).time(6).
+timea(0).timea(1).timea(2).timea(3).timea(4).timea(5).
+row(0).row(1).row(2).row(3).
+column(0).column(1).column(2).column(3).
+
+%moveRight(T) v -moveRight(T) :- timea(T).
+%moveDown(T) v -moveDown(T) :- timea(T).
+%moveLeft(T) v -moveLeft(T) :- timea(T).
+%moveUp(T) v -moveUp(T) :- timea(T).
+goto(X,Y,T) v -goto(X,Y,T) :- timea(T),row(X),column(Y).
+
+pickPerson(T) v -pickPerson(T) :- timea(T).
+
+%robot's memory
+robotAt(X,Y,0) :- &robotLocation[](X,Y), row(X), column(Y).
+%law of inertia
+robotAt(X,Y,T1) :- not -robotAt(X,Y,T1), robotAt(X,Y,T), T1=T+1, time(T), time(T1), row(X), column(Y). 
+-robotAt(X,Y,T1) :- not robotAt(X,Y,T1), -robotAt(X,Y,T), T1=T+1, time(T), time(T1), row(X), column(Y). 
+%a robot can't be in more than one place
+-robotAt(X1,Y1,T) :- robotAt(X,Y,T), X1!=X, time(T), row(X), row(X1), column(Y), column(Y1).
+-robotAt(X1,Y1,T) :- robotAt(X,Y,T), Y1!=Y, time(T), row(X), row(X1), column(Y), column(Y1).
+
+
+obstacleAt(X,Y) :- &obstacleLocation[](X,Y), row(X), column(Y).
+%the reachable points according to its memory of the environment and its current sensing
+reachable(X,Y) :- &reachable[](X,Y), row(X), column(Y).
+
+%-obstacleAt(X,Y) :- not obstacleAt(X,Y), row(X), column(Y).
+
+%the cells that the robot has visited and sensed the surrounding
+visited(X,Y) :- &visited[](X,Y), row(X), column(Y).
+
+%reachable(X,Y) :- sensed(X,Y), row(X), column(Y).
+
+%visited(X,Y) :- sensed(X,Y).
+%visited(X,Y) :- obstacleAt(X,Y), row(X), column(Y).
+%visited(X,Y) :- robotAt(X,Y,T), time(T), row(X), column(Y).
+
+%:- robotAt(X,Y,T), obstacleAt(X,Y), time(T), row(X), column(Y).
+%:- robotAt(X,Y,T), not reachable(X,Y), time(T), row(X), column(Y).
+
+%move actions of robot
+%:- robotAt(3,Y,T), moveDown(T), time(T), column(Y).
+%robotAt(X1,Y,T1) :- moveDown(T), robotAt(X,Y,T), T1=T+1, X1=X+1, timea(T), row(X) , row(X1), column(Y).
+%:- robotAt(0,Y,T), moveUp(T), time(T), column(Y).
+%robotAt(X1,Y,T1) :- moveUp(T), robotAt(X,Y,T), T1=T+1, X1=X-1, timea(T), row(X), row(X1), column(Y).
+%:- robotAt(X,3,T), moveRight(T), time(T), row(X).
+%robotAt(X,Y1,T1) :- moveRight(T), robotAt(X,Y,T), T1=T+1, Y1=Y+1, timea(T), row(X), column(Y), column(Y1).
+%:- robotAt(X,0,T), moveLeft(T), time(T), row(X).
+%robotAt(X,Y1,T1) :- moveLeft(T), robotAt(X,Y,T), T1=T+1, Y1=Y-1, timea(T), row(X), column(Y), column(Y1).
+
+robotAt(X,Y,T1) :- goto(X,Y,T), T1=T+1, row(X), column(Y), timea(T).
+:- goto(X,Y,T), not reachable(X,Y), row(X), column(Y), timea(T).
+:- goto(X,Y,T), robotAt(X,Y,T), row(X), column(Y), timea(T).
+:- goto(X1,Y1,T), robotAt(X,Y,T), X1!=X, Y1!=Y, row(X), column(Y), row(X1), column(Y1), timea(T).
+
+pathexists(X,Y,X,Y1) :- not obstacleAt(X,Y2), Y<=Y2, Y2<=Y1, row(X), column(Y), column(Y1), column(Y2).
+pathexists(X,Y1,X,Y) :- pathexists(X,Y,X,Y1).
+%pathexists(X,Y1,X,Y) :- not obstacleAt(X,Y2), Y1<Y2, Y2<Y, row(X), column(Y), column(Y1), column(Y2).
+pathexists(X,Y,X1,Y) :- not obstacleAt(X2,Y), X<=X2, X2<=X1, row(X), row(X1), row(X2), column(Y).
+pathexists(X1,Y,X,Y) :- pathexists(X,Y,X1,Y).
+%pathexists(X1,Y,X,Y) :- not obstacleAt(X2,Y), X1<X2, X2<X, row(X), row(X1), row(X2), column(Y).
+
+:- goto(X1,Y1,T), robotAt(X,Y,T), not pathexists(X,Y,X1,Y1), row(X), column(Y), row(X1), column(Y1), time(T). 
+
+reason(R) :- &getFailureReason[](R).
+personDetected :- reason(person).
+
+personAt(X,Y,0) :- &personLocation[](X,Y), row(X), column(Y).
+-personAt(X,Y,0) :- not personAt(X,Y,0), row(X), column(Y).
+%law of inertia
+personAt(X,Y,T1) :- not -personAt(X,Y,T1), personAt(X,Y,T), T1=T+1, time(T), time(T1), row(X), column(Y). 
+-personAt(X,Y,T1) :- not personAt(X,Y,T1), -personAt(X,Y,T), T1=T+1, time(T), time(T1), row(X), column(Y). 
+%person can't be in more than one place
+-personAt(X1,Y1,T) :- personAt(X,Y,T), X1!=X, time(T), row(X), row(X1), column(Y), column(Y1).
+-personAt(X1,Y1,T) :- personAt(X,Y,T), Y1!=Y, time(T), row(X), row(X1), column(Y), column(Y1).
+
+-personOn(0).
+%law of inertia
+personOn(T1) :- not -personOn(T1), personOn(T), T1=T+1, time(T), time(T1). 
+-personOn(T1) :- not personOn(T1), -personOn(T), T1=T+1, time(T), time(T1). 
+
+
+%picking up the person
+personOn(T1) :- pickPerson(T), personAt(X,Y,T), robotAt(X,Y,T), T1=T+1, timea(T), row(X), column(Y).
+%can't pick up the person if not in the same cell
+:- pickPerson(T), personAt(X1,Y1,T), robotAt(X,Y,T), X1!=X, time(T), row(X), row(X1), column(Y), column(Y1).
+:- pickPerson(T), personAt(X1,Y1,T), robotAt(X,Y,T), Y1!=Y, time(T), row(X), row(X1), column(Y), column(Y1).
+%robot can't pick up the already picked person
+:- pickPerson(T), personOn(T), timea(T).
+
+:- pickPerson(T), moveRight(T), timea(T).
+:- pickPerson(T), moveLeft(T), timea(T).
+:- pickPerson(T), moveUp(T), timea(T).
+:- pickPerson(T), moveDown(T), timea(T).
+
+%if the robot has the person, the person moves with the robot
+personAt(X,Y,T) :- robotAt(X,Y,T), personOn(T), time(T), row(X), column(Y).
+
+
+
+#robot[resetFailureReason,0]{b,0}.
+
+%add the knowledge of the current sensing to the memory
+#robot[sense,0]{b,T} :- not visited(X,Y), robotAt(X,Y,T), row(X), column(Y), time(T).
+
+%#robot[move,right]{b,T} :- moveRight(T),timea(T).
+%#robot[move,down]{b,T}:- moveDown(T),timea(T).
+%#robot[move,left]{b,T}:- moveLeft(T),timea(T).
+%#robot[move,up]{b,T}:- moveUp(T),timea(T).
+#robot[goto,X,Y]{b,T}:- goto(X,Y,T), row(X), column(Y),timea(T).
+
+#robot[pick,person]{b,T} :- pickPerson(T), timea(T).
+
+:- not personAt(0,0,6), personDetected.
+
+
+goal(1,1).
+%goal(X,Y) :- &getGoal[](X,Y),row(X),column(Y).
+-goal(X,Y) :- not goal(X,Y),row(X),column(Y).
+:- not robotAt(X,Y,2), goal(X,Y), not personDetected, row(X),column(Y).
+:- goto(X1,Y1,T), goal(X,Y), robotAt(X,Y,T), not personDetected, row(X),column(Y),row(X1),column(Y1), timea(T).
+
+savedAll :- &savedAll[]().
+#acthexContinue{b} :- not savedAll.
+
+
+
+

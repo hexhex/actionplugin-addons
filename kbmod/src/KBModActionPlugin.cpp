@@ -36,8 +36,6 @@
 #include "KBModActionPlugin.h"
 #include <iostream>
 
-#include "dlvhex/globals.h"
-
 DLVHEX_NAMESPACE_BEGIN
 
 KBModActionPlugin::Environment::Environment() {

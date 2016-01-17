@@ -11,7 +11,7 @@
 #ifndef KBMOD_ACTION_PLUGIN_H
 #define KBMOD_ACTION_PLUGIN_H
 
-#include <dlvhex/Error.h>
+#include <dlvhex2/Error.h>
 
 #include "acthex/ActionPluginInterface.h"
 
@@ -20,7 +20,7 @@ DLVHEX_NAMESPACE_BEGIN
 class KBModActionPlugin: public ActionPluginInterface {
 
 public:
-	
+
 	class Environment: public PluginEnvironment {
 	public:
 		Environment();
@@ -28,7 +28,7 @@ public:
 	private:
 		std::string name;
 	};
-	
+
 	KBModActionPlugin() :
 			ActionPluginInterface() {
 		setNameVersion(PACKAGE_TARNAME, KBMODPLUGIN_VERSION_MAJOR,
@@ -88,9 +88,9 @@ public:
 				const InterpretationConstPtr);
 
 	};
-	
+
 protected:
-	
+
 	ActionPluginInterfacePtr create(ProgramCtx& ctx) {
 		DBGLOG(PLUGIN, "create in KBModActionPlugin");
 		#warning a trick, maybe we should find a way remove it
